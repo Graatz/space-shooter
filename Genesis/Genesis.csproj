@@ -60,7 +60,6 @@
     <Compile Include="Bullet.cs" />
     <Compile Include="Enemy.cs" />
     <Compile Include="EnemySpawner.cs" />
-    <Compile Include="GameObject.cs" />
     <Compile Include="Genesis.cs" />
     <Compile Include="Particle.cs" />
     <Compile Include="ParticleEngine.cs" />
@@ -68,7 +67,6 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Space.cs" />
-    <Compile Include="Test.cs" />
     <Compile Include="Weapon.cs" />
   </ItemGroup>
   <ItemGroup>
