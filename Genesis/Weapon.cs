@@ -33,7 +33,7 @@ namespace Genesis
             for (int i = 0; i < Bullets.Count; i++)
             {
                 Bullets[i].Update();
-                if (Bullets[i].Location.X < 0 || Bullets[i].Location.Y < 0 && Bullets[i].Location.X > Player.Space.Width && Bullets[i].Location.Y > Player.Space.Height)
+                if (Bullets[i].Position.X < 0 || Bullets[i].Position.Y < 0 && Bullets[i].Position.X > Player.Space.Width && Bullets[i].Position.Y > Player.Space.Height)
                 {
                     Bullets.RemoveAt(i);
                 }
@@ -41,11 +41,11 @@ namespace Genesis
                 {
                     for (int j = 0; j < Player.EnemySpawner.Enemies.Count; j++)
                     {
-                        Rectangle bulletRectangle = new Rectangle((int)Bullets[i].Location.X, (int)Bullets[i].Location.Y, (int)(Bullets[i].Width), (int)(Bullets[i].Height));
+                        Rectangle bulletRectangle = new Rectangle((int)Bullets[i].Position.X, (int)Bullets[i].Position.Y, (int)(Bullets[i].Width), (int)(Bullets[i].Height));
                         Rectangle enemyRectangle = new Rectangle((int)Player.EnemySpawner.Enemies[j].Position.X, (int)Player.EnemySpawner.Enemies[j].Position.Y, (int)Player.EnemySpawner.Enemies[j].Width, (int)Player.EnemySpawner.Enemies[j].Height);
                         if (bulletRectangle.Intersects(enemyRectangle))
                         {
-                            Player.ParticleEngine.GenerateParticles(70, Bullets[i].Location);
+                            Player.ParticleEngine.GenerateParticles(70, Bullets[i].Position);
                             Bullets.RemoveAt(i);
                             Player.EnemySpawner.Enemies.RemoveAt(j);
                             Player.EnemySpawner.SpawnEnemies(1);
