@@ -23,6 +23,7 @@ namespace Genesis
         public Vector2 Position { get; set; }
         public int Width { get; set; }
         public int Height { get; set; }
+        public Camera Camera { get; set; }
 
         private Space space;
         public Space Space
@@ -50,8 +51,9 @@ namespace Genesis
             }
         }
 
-        public Player(Space space, ParticleEngine particleEngine, GraphicsDevice device, Vector2 position)
+        public Player(Camera camera, Space space, ParticleEngine particleEngine, GraphicsDevice device, Vector2 position)
         {
+            Camera = camera;
             ParticleEngine = particleEngine;
             Space = space;
             Position = position;
@@ -87,6 +89,10 @@ namespace Genesis
                 Vector2 newPosition = new Vector2(Position.X + Velocity, Position.Y);
                 // Sprawdzenie kolizji
                 Position = newPosition;
+                if (Camera.Position.X > 0 && Camera.Position.X + 4 + Genesis.Width < Space.Width && Camera.Position.Y > 0 && Camera.Position.Y + Genesis.Height < Space.Height)
+                {
+                    Camera.MoveCameraRight(new Vector2(4, 0));
+                }
             }
 
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.A))
@@ -94,6 +100,10 @@ namespace Genesis
                 Vector2 newPosition = new Vector2(Position.X - Velocity, Position.Y);
                 // Sprawdzenie kolizji
                 Position = newPosition;
+                if (Camera.Position.X - 4 > 0 && Camera.Position.X + Genesis.Width < Space.Width && Camera.Position.Y > 0 && Camera.Position.Y + Genesis.Height < Space.Height)
+                {
+                    Camera.MoveCameraLeft(new Vector2(4, 0));
+                }
             }
 
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.W))
@@ -101,6 +111,10 @@ namespace Genesis
                 Vector2 newPosition = new Vector2(Position.X, Position.Y - Velocity);
                 // Sprawdzenie kolizji
                 Position = newPosition;
+                if (Camera.Position.X > 0 && Camera.Position.X + Genesis.Width < Space.Width && Camera.Position.Y - 4 > 0 && Camera.Position.Y + Genesis.Height < Space.Height)
+                {
+                    Camera.MoveCameraUp(new Vector2(0, 4));
+                }
             }
 
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.S))
@@ -108,6 +122,10 @@ namespace Genesis
                 Vector2 newPosition = new Vector2(Position.X, Position.Y + Velocity);
                 // Sprawdzenie kolizji
                 Position = newPosition;
+                if (Camera.Position.X > 0 && Camera.Position.X + Genesis.Width < Space.Width && Camera.Position.Y > 0 && Camera.Position.Y + 4 + Genesis.Height < Space.Height)
+                {
+                    Camera.MoveCameraDown(new Vector2(0, 4));
+                }
             }
         }
 
@@ -117,14 +135,14 @@ namespace Genesis
             Weapon.Update(gameTime, mouseState);
         }
 
-        public void Draw(SpriteBatch spriteBatch)
+        public void Draw(SpriteBatch spriteBatch, GraphicsDevice graphics)
         {
-            Weapon.Draw(spriteBatch);
+            Weapon.Draw(spriteBatch, graphics);
 
             if (Position.X >= 0 && Position.Y >= 0 && Position.X < Space.Width && Position.Y < Space.Height)
             {
                 Rectangle sourceRectangle = new Rectangle((int)Position.X, (int)Position.Y, Width, Height);
-                spriteBatch.Begin();
+                spriteBatch.Begin(SpriteSortMode.Immediate, null, null, null, null, null, Space.Camera.getTransformation(graphics));
                 spriteBatch.Draw(Texture, sourceRectangle, Color.White);
                 spriteBatch.End();
             }

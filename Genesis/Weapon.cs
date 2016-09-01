@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -66,19 +67,20 @@ namespace Genesis
                 {
                     Vector2 mousePosition = new Vector2(mouseState.Position.X, mouseState.Position.Y);
                     Vector2 bulletPosition = new Vector2(Player.Position.X + Player.Width / 2, Player.Position.Y + Player.Height / 2);
+                    mousePosition = new Vector2(mouseState.X + Player.Camera.Position.X, mouseState.Y + Player.Camera.Position.Y);
                     Vector2 direction = bulletPosition - mousePosition;
                     direction.Normalize();
-                    Bullets.Add(new Bullet(Player.Space, bulletPosition, Velocity, direction, Player.ParticleEngine.textures[0], Color.Yellow));
+                    Bullets.Add(new Bullet(Player.Space, bulletPosition, Velocity, direction, Player.ParticleEngine.textures[2], Color.Yellow));
                     Player.Counter = 1;
                 }
             }
         }
 
-        public void Draw(SpriteBatch spriteBatch)
+        public void Draw(SpriteBatch spriteBatch, GraphicsDevice graphics)
         {
             for (int i = 0; i < Bullets.Count; i++)
             {
-                Bullets[i].Draw(spriteBatch);
+                Bullets[i].Draw(spriteBatch, graphics);
             }
         }
     }

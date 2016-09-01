@@ -12,7 +12,7 @@ namespace Genesis
     class Particle
     {
         private Texture2D texture;
-        private Vector2 position;
+        public Vector2 position;
         private Vector2 velocity;
         private float angle;
         private float angularVelocity;
@@ -44,10 +44,10 @@ namespace Genesis
             Scale -= 0.01f;
         }
 
-        public void Draw(SpriteBatch spriteBatch)
+        public void Draw(SpriteBatch spriteBatch, GraphicsDevice graphics, Camera camera)
         {
             //Rectangle sourceRectangle = new Rectangle((int)position.X, (int)position.Y, texture.Width, texture.Height);
-            spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive);
+            spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, null, null, null, null, camera.getTransformation(graphics));
             spriteBatch.Draw(texture, position, null, Color, 0f, new Vector2(50, 50), Scale, SpriteEffects.None, 0f);
             spriteBatch.End();
         }

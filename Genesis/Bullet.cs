@@ -34,23 +34,21 @@ namespace Genesis
             Scale = 0.07f;
             Width = texture.Width * Scale;
             Height = texture.Height * Scale;
-
         }
 
         public void Update()
         {
-
             Position -= Dir * Velocity;
         }
 
-        public void Draw(SpriteBatch spriteBatch)
+        public void Draw(SpriteBatch spriteBatch, GraphicsDevice graphics)
         {
             if (Position.X >= 0 && Position.Y >= 0 && Position.X < Space.Width && Position.Y < Space.Height)
             {
                 Rectangle destinationRectangle = new Rectangle((int)Position.X, (int)Position.Y, Texture.Width, Texture.Height);
                 Color fadingColor = Color;
 
-                spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive);
+                spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, null, null, null, null, Space.Camera.getTransformation(graphics));
                 spriteBatch.Draw(Texture, Position, null, Color, 0f, new Vector2(Texture.Width / 2, Texture.Height / 2), Scale, SpriteEffects.None, 0f);
                 spriteBatch.End();
 
@@ -61,7 +59,7 @@ namespace Genesis
 
                     if (bulletPath >= i)
                     {
-                        spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive);
+                        spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, null, null, null, null, Space.Camera.getTransformation(graphics));
                         spriteBatch.Draw(Texture, newLocation, null, fadingColor, 0f, new Vector2(Texture.Width / 2, Texture.Height / 2), Scale, SpriteEffects.None, 0f);
                         spriteBatch.End();
                     }

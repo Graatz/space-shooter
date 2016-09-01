@@ -58,6 +58,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Bullet.cs" />
+    <Compile Include="Camera.cs" />
     <Compile Include="Enemy.cs" />
     <Compile Include="EnemySpawner.cs" />
     <Compile Include="Genesis.cs" />

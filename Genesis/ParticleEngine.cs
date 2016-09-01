@@ -19,11 +19,14 @@ namespace Genesis
             random = new Random();
             textures = new List<Texture2D>();
             textures.Add(Content.Load<Texture2D>("Textures/orange"));
+            textures.Add(Content.Load<Texture2D>("Textures/purple"));
+            textures.Add(Content.Load<Texture2D>("Textures/green"));
+            textures.Add(Content.Load<Texture2D>("Textures/blue"));
         }
 
         public Particle GenerateParticle()
         {
-            Texture2D texture = textures[random.Next(textures.Count)];
+            Texture2D texture = textures[0];
             Vector2 position = emitterLocation;
             Vector2 velocity = new Vector2((float)random.NextDouble() * 3 - (float)random.NextDouble() * 3, (float)random.NextDouble() * 3 - (float)random.NextDouble() * 3);
             float angle = 0;
@@ -53,11 +56,11 @@ namespace Genesis
             }
         }
 
-        public void Draw(SpriteBatch spriteBatch)
+        public void Draw(SpriteBatch spriteBatch, GraphicsDevice graphics, Camera camera)
         {
             for (int i = 0; i < particles.Count; i++)
             {
-                particles[i].Draw(spriteBatch);
+                particles[i].Draw(spriteBatch, graphics, camera);
             }
         }
     }

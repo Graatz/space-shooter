@@ -58,11 +58,11 @@ namespace Genesis
             }
         }
 
-        public void Draw(SpriteBatch spriteBatch)
+        public void Draw(SpriteBatch spriteBatch, GraphicsDevice graphics)
         {
             for (int i = 0; i < Enemies.Count; i++)
             {
-                Enemies[i].Draw(spriteBatch);
+                Enemies[i].Draw(spriteBatch, graphics);
             }
         }
 

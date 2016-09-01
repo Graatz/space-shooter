@@ -7,6 +7,9 @@ namespace Genesis
 {
     public class Genesis : Game
     {
+        public static int Width = 2560;
+        public static int Height = 1080;
+
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
         Player player;
@@ -15,12 +18,16 @@ namespace Genesis
         Space space;
         Texture2D cursor;
         MouseState mouseState;
+        Camera camera;
 
         public Genesis()
         {
             graphics = new GraphicsDeviceManager(this);
-            graphics.PreferredBackBufferWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
-            graphics.PreferredBackBufferHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
+            graphics.PreferredBackBufferWidth = Width;
+            graphics.PreferredBackBufferHeight = Height;
+
+            //graphics.PreferredBackBufferWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
+            //graphics.PreferredBackBufferHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
             graphics.IsFullScreen = true;
             graphics.ApplyChanges();
             Content.RootDirectory = "Content"; 
@@ -40,16 +47,19 @@ namespace Genesis
             particleEngine = new ParticleEngine();
             particleEngine.LoadContent(Content);
 
-            space = new Space(graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight);
+            space = new Space(5000, 4000);
             space.LoadContent(Content, GraphicsDevice);
             space.GenerateStars();
 
-            player = new Player(space, particleEngine, GraphicsDevice, new Vector2(graphics.PreferredBackBufferWidth / 2, graphics.PreferredBackBufferHeight /2));
+            camera = new Camera(space);
+            camera.SetCameraPosition(new Vector2(1, 1));
+
+            player = new Player(camera, space, particleEngine, GraphicsDevice, new Vector2(graphics.PreferredBackBufferWidth / 2, graphics.PreferredBackBufferHeight /2));
             player.LoadContent(Content);
 
             enemySpawner = new EnemySpawner(space, player, GraphicsDevice);
             enemySpawner.LoadContent(Content);
-            enemySpawner.SpawnEnemies(10);
+            //enemySpawner.SpawnEnemies(50);
         }
 
         protected override void UnloadContent()
@@ -74,10 +84,10 @@ namespace Genesis
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.Black);
-            space.Draw(spriteBatch);
-            player.Draw(spriteBatch);
-            enemySpawner.Draw(spriteBatch);
-            particleEngine.Draw(spriteBatch);
+            space.Draw(spriteBatch, GraphicsDevice);
+            player.Draw(spriteBatch, GraphicsDevice);
+            enemySpawner.Draw(spriteBatch, GraphicsDevice);
+            particleEngine.Draw(spriteBatch, GraphicsDevice, camera);
 
             spriteBatch.Begin();
             spriteBatch.Draw(cursor, new Rectangle(mouseState.Position - new Point(5, 5), new Point(cursor.Width, cursor.Height)), Color.White);
