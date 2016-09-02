@@ -57,13 +57,15 @@
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Asteroid.cs" />
     <Compile Include="Bullet.cs" />
     <Compile Include="Camera.cs" />
     <Compile Include="Enemy.cs" />
-    <Compile Include="EnemySpawner.cs" />
+    <Compile Include="Spawner.cs" />
     <Compile Include="Genesis.cs" />
     <Compile Include="Particle.cs" />
     <Compile Include="ParticleEngine.cs" />
+    <Compile Include="Planet.cs" />
     <Compile Include="Player.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

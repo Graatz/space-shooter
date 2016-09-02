@@ -79,7 +79,7 @@ namespace Genesis
 
         public void Draw(SpriteBatch spriteBatch, GraphicsDevice graphics)
         {
-            spriteBatch.Begin(SpriteSortMode.Immediate, null, null, null, null, null, Space.Camera.getTransformation(graphics));
+            spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, null, null, null, null, Space.Camera.getTransformation(graphics));
             spriteBatch.Draw(Texture, Position, null, Color.White, Rotation, new Vector2(Width / 2, Height / 2), Scale, SpriteEffects.None, 0f);
             spriteBatch.End();
         }

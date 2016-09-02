@@ -35,13 +35,13 @@ namespace Genesis
             Transparency = 255;
         }
 
-        public void Update()
+        public void Update(GameTime gameTime)
         {
             Transparency -= 5;
             Color.A = Transparency;
-            position += velocity * 2;
-            angle += angularVelocity;
-            Scale -= 0.01f;
+            position += (velocity * (float)gameTime.ElapsedGameTime.TotalSeconds * 2);
+            angle += angularVelocity * (float)gameTime.ElapsedGameTime.TotalSeconds;
+            Scale -= 0.5f * (float)gameTime.ElapsedGameTime.TotalSeconds;
         }
 
         public void Draw(SpriteBatch spriteBatch, GraphicsDevice graphics, Camera camera)

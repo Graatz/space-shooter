@@ -28,9 +28,9 @@ namespace Genesis
         {
             Texture2D texture = textures[0];
             Vector2 position = emitterLocation;
-            Vector2 velocity = new Vector2((float)random.NextDouble() * 3 - (float)random.NextDouble() * 3, (float)random.NextDouble() * 3 - (float)random.NextDouble() * 3);
+            Vector2 velocity = new Vector2((float)random.NextDouble() * 300 - (float)random.NextDouble() * 300, (float)random.NextDouble() * 300 - (float)random.NextDouble() * 300);
             float angle = 0;
-            float angularVelocity = (float)random.NextDouble();
+            float angularVelocity = (float)random.NextDouble() * 100;
             Color color = Color.White;
             int ttl = 20 + random.Next(40);
 
@@ -46,11 +46,11 @@ namespace Genesis
             }
         }
 
-        public void Update()
+        public void Update(GameTime gameTime)
         {
             for (int i = 0; i < particles.Count; i++)
             {
-                particles[i].Update();
+                particles[i].Update(gameTime);
                 if (particles[i].Color.A <= 0 || particles[i].Scale <= 0)
                     particles.RemoveAt(i);
             }

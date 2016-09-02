@@ -15,25 +15,26 @@ namespace Genesis
         public Player Player { get; set; }
         public List<Bullet> Bullets { get; set; }
         public float Velocity { get; set; }
+        public double Counter { get; set; }
 
         public Weapon(Player player)
         {
-            Velocity = 20.5f;
+            Velocity = 1300f;
             Player = player;
             Bullets = new List<Bullet>();
         }
 
-        public void Update(GameTime gameTime, MouseState mouseState)
+        public void Update(GameTime gameTime)
         {
-            Shoot(gameTime, mouseState);
-            UpdateBullets();
+            Shoot(gameTime);
+            UpdateBullets(gameTime);
         }
 
-        public void UpdateBullets()
+        public void UpdateBullets(GameTime gameTime)
         {
             for (int i = 0; i < Bullets.Count; i++)
             {
-                Bullets[i].Update();
+                Bullets[i].Update(gameTime);
                 if (Bullets[i].Position.X < 0 || Bullets[i].Position.Y < 0 && Bullets[i].Position.X > Player.Space.Width && Bullets[i].Position.Y > Player.Space.Height)
                 {
                     Bullets.RemoveAt(i);
@@ -57,21 +58,17 @@ namespace Genesis
             }
         }
 
-        public void Shoot(GameTime gameTime, MouseState mouseState)
+        public void Shoot(GameTime gameTime)
         {
-            Player.Counter -= Player.AttackSpeed * gameTime.ElapsedGameTime.TotalSeconds;
+            Counter -= Player.AttackSpeed * gameTime.ElapsedGameTime.TotalSeconds;
 
-            if (Player.Counter <= 0)
+            if (Counter <= 0)
             {
-                if (mouseState.LeftButton == ButtonState.Pressed)
+                if (Mouse.GetState().LeftButton == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Space))
                 {
-                    Vector2 mousePosition = new Vector2(mouseState.Position.X, mouseState.Position.Y);
-                    Vector2 bulletPosition = new Vector2(Player.Position.X + Player.Width / 2, Player.Position.Y + Player.Height / 2);
-                    mousePosition = new Vector2(mouseState.X + Player.Camera.Position.X, mouseState.Y + Player.Camera.Position.Y);
-                    Vector2 direction = bulletPosition - mousePosition;
-                    direction.Normalize();
-                    Bullets.Add(new Bullet(Player.Space, bulletPosition, Velocity, direction, Player.ParticleEngine.textures[2], Color.Yellow));
-                    Player.Counter = 1;
+                    Vector2 bulletPosition = new Vector2(Player.Position.X, Player.Position.Y);
+                    Bullets.Add(new Bullet(Player, Player.Space, bulletPosition, Velocity, Player.ParticleEngine.textures[0], Color.Yellow));
+                    Counter = 1;
                 }
             }
         }

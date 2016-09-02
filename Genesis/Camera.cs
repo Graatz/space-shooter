@@ -28,14 +28,11 @@ namespace Genesis
             }
         }
 
-        public Space Space { get; set; }
         protected float rotation;
         protected float zoom;
 
-        public Camera(Space space)
+        public Camera()
         {
-            Space = space;
-            Space.Camera = this;
             zoom = 1f;
             rotation = 0.0f;
             position = Vector2.Zero;
@@ -73,24 +70,10 @@ namespace Genesis
             this.position = position;
         }
 
-        public void MoveCameraRight(Vector2 velocity)
+        public void MoveCamera(Vector2 velocity)
         {
-            position.X += velocity.X;
-        }
-
-        public void MoveCameraLeft(Vector2 velocity)
-        {
-            position.X -= velocity.X;
-        }
-
-        public void MoveCameraUp(Vector2 velocity)
-        {
-            position.Y -= velocity.Y;
-        }
-
-        public void MoveCameraDown(Vector2 velocity)
-        {
-            position.Y += velocity.Y;
+            //if (Position.X + velocity.X > 0 && Position.X + velocity.X + Genesis.Width < 5000 && Position.Y + velocity.Y > 0 && Position.Y + velocity.Y + Genesis.Height < 4000)
+                position += velocity;
         }
     }
 }

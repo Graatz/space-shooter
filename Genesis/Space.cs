@@ -14,36 +14,18 @@ namespace Genesis
     {
         public int Width { get; set; }
         public int Height { get; set; }
-        public List<Star> Stars { get; set; }
-        public List<Star> Nebulas { get; set; }
-        public List<Star> Planets { get; set; }
+        public List<Planet> Stars { get; set; }
+        public List<Planet> Nebulas { get; set; }
+        public List<Planet> Planets { get; set; }
         public List<Texture2D> Textures { get; set; }
         public List<Texture2D> Objects { get; set; }
         public Camera Camera { get; set; }
         private Random random;
+        public float vortexRotation = 0;
 
-        public struct Star
+        public Space(Camera camera, int width, int height)
         {
-            public Texture2D Texture { get; set; }
-            public Vector2 Location { get; set; }
-            public Color Color { get; set; }
-            public float Scale { get; set; }
-            public int Width { get; set; }
-            public int Height { get; set; }
-
-            public Star(Texture2D texture, Vector2 location, float scale, Color color)
-            {
-                Texture = texture;
-                Location = location;
-                Scale = scale;
-                Color = color;
-                Width = (int)(Texture.Width * Scale);
-                Height = (int)(Texture.Height * Scale);
-            }
-        }
-
-        public Space(int width, int height)
-        {
+            Camera = camera;
             Width = width;
             Height = height;
         }
@@ -55,9 +37,9 @@ namespace Genesis
             Textures = new List<Texture2D>();
             Objects = new List<Texture2D>();
 
-            Stars = new List<Star>();
-            Nebulas = new List<Star>();
-            Planets = new List<Star>();
+            Stars = new List<Planet>();
+            Nebulas = new List<Planet>();
+            Planets = new List<Planet>();
 
             Texture2D pixel = new Texture2D(GraphicsDevice, 1, 1);
             Color[] colors = new Color[1];
@@ -66,26 +48,30 @@ namespace Genesis
 
             Textures.Add(pixel);
             Textures.Add(Content.Load<Texture2D>("Textures/blue"));
+            Textures.Add(Content.Load<Texture2D>("Textures/purple"));
+            Textures.Add(Content.Load<Texture2D>("Textures/red"));
+            Textures.Add(Content.Load<Texture2D>("Textures/green"));
+            Textures.Add(Content.Load<Texture2D>("Textures/gray"));
 
             Objects.Add(Content.Load<Texture2D>("Textures/moon"));
             Objects.Add(Content.Load<Texture2D>("Textures/mars"));
             Objects.Add(Content.Load<Texture2D>("Textures/pluton"));
+            Objects.Add(Content.Load<Texture2D>("Textures/wir"));
             Objects.Add(Content.Load<Texture2D>("Textures/sun"));
+
+            Generate();
         }
 
-        public void GenerateStars()
+        public void Generate()
         {
-            // NEBULAS
-            for (int i = 0; i < 500; i++)
-            {
-                Texture2D nebulaTexture = Textures[1];
-                Vector2 nebulaLocation = new Vector2(random.Next(Width), random.Next(Height));
-                float scale = 1.8f;
-                Star nebula = new Star(nebulaTexture, nebulaLocation, scale, new Color(255, 255, 255, random.Next(30, 55)));
-                Nebulas.Add(nebula);
-            }
+            GenerateSun();
+            GeneratePlanets();
+            GenerateNebulas();
+            GenerateStars();
+        }
 
-            // PLANETS
+        public void GeneratePlanets()
+        {
             for (int i = 0; i < 5; i++)
             {
                 bool repeat;
@@ -94,10 +80,11 @@ namespace Genesis
                     repeat = false;
                     int numberOfPlanets = Planets.Count;
 
-                    float scale = 1.0f / random.Next(4);
-                    Texture2D planetTexture = Objects[random.Next(Objects.Count)];
+                    float scale = 1.0f / (float)(random.NextDouble() * (1.0 - 4.0) + 4.0);
+                    int randomTexture = random.Next(Objects.Count - 2);
+                    Texture2D planetTexture = Objects[randomTexture];
                     Vector2 planetLocation = new Vector2(random.Next((int)(planetTexture.Width * scale), Width - (int)(planetTexture.Width * scale)), random.Next((int)(planetTexture.Height * scale), Height - (int)(planetTexture.Height * scale)));
-                    Star planet = new Star(planetTexture, planetLocation, scale, Color.White);
+                    Planet planet = new Planet(Camera, planetTexture, planetLocation, scale, Color.White, Vector2.Zero);
 
                     if (numberOfPlanets >= 1)
                     {
@@ -118,19 +105,69 @@ namespace Genesis
                         }
                     }
                     else
-                        Planets.Add(planet);                  
+                        Planets.Add(planet);
                 } while (repeat == true);
             }
-            Debug.WriteLine(Planets.Count);
+        }
 
-            // STARS
+        public void GenerateNebulas()
+        {
             for (int i = 0; i < 2000; i++)
             {
-                Texture2D starTexture = Textures[0];
-                Vector2 starLocation = new Vector2(random.Next(Width), random.Next(Height));
-                float scale = 1.0f;
-                Star star = new Star(starTexture, starLocation, scale, new Color(255, 255, 255, random.Next(10, 255)));
-                Stars.Add(star);
+                Texture2D nebulaTexture = Textures[1];
+                Vector2 nebulaLocation = new Vector2(random.Next(Width), random.Next(Height));
+                float scale = 1.8f;
+                Planet nebula = new Planet(Camera, nebulaTexture, nebulaLocation, scale, new Color(255, 255, 255, random.Next(30, 55)), new Vector2(nebulaTexture.Width/2, nebulaTexture.Height/2));
+                Nebulas.Add(nebula);
+            }
+        }
+
+        public void GenerateSun()
+        {
+            float scale = 2.0f;
+            Texture2D planetTexture = Objects[4];
+            Vector2 planetLocation = new Vector2(random.Next((int)(planetTexture.Width * scale), Width - (int)(planetTexture.Width * scale)), random.Next((int)(planetTexture.Height * scale), Height - (int)(planetTexture.Height * scale)));
+            Planet planet = new Planet(Camera, planetTexture, planetLocation, scale, Color.White, Vector2.Zero);
+
+            Planets.Add(planet);
+        }
+
+        public void GenerateStars()
+        {
+            for (int i = 0; i < 6000; i++)
+            {
+                bool repeat;
+                do
+                {
+                    repeat = false;
+                    int numberOfPlanets = Planets.Count;
+
+                    float scale = 1.0f;
+                    Texture2D starTexture = Textures[0];
+                    Vector2 starLocation = new Vector2(random.Next(Width), random.Next(Height));
+                    Planet star = new Planet(Camera, starTexture, starLocation, scale, new Color(255, 255, 255, random.Next(10, 255)), Vector2.Zero);
+
+                    if (numberOfPlanets >= 1)
+                    {
+                        for (int j = 0; j < numberOfPlanets; j++)
+                        {
+                            Rectangle object1 = new Rectangle((int)star.Location.X, (int)star.Location.Y, (int)star.Width, (int)star.Height);
+                            Rectangle object2 = new Rectangle((int)Planets[j].Location.X, (int)Planets[j].Location.Y, (int)Planets[j].Width, (int)Planets[j].Height);
+                            if (object1.Intersects(object2))
+                            {
+                                repeat = true;
+                                break;
+                            }
+                            else if (j == numberOfPlanets - 1)
+                            {
+                                Stars.Add(star);
+                                repeat = false;
+                            }
+                        }
+                    }
+                    else
+                        Stars.Add(star);
+                } while (repeat == true);
             }
         }
 
@@ -140,29 +177,17 @@ namespace Genesis
 
             for (int i = 0; i < Stars.Count; i++)
             {
-                if (Camera.InView(new Rectangle((int)Stars[i].Location.X, (int)Stars[i].Location.Y, Stars[i].Width, Stars[i].Height)))
-                {
-                    Rectangle destinationRectangle = new Rectangle((int)Stars[i].Location.X, (int)Stars[i].Location.Y, Stars[i].Texture.Width, Stars[i].Texture.Height);
-                    spriteBatch.Draw(Stars[i].Texture, Stars[i].Location, null, Stars[i].Color, 0f, Vector2.Zero, Stars[i].Scale, SpriteEffects.None, 0f);
-                }
+                Stars[i].Draw(spriteBatch);
             }
 
             for (int i = 0; i < Nebulas.Count; i++)
             {
-                if (Camera.InView(new Rectangle((int)Nebulas[i].Location.X, (int)Nebulas[i].Location.Y, Nebulas[i].Width, Nebulas[i].Height)))
-                {
-                    Rectangle destinationRectangle = new Rectangle((int)Nebulas[i].Location.X, (int)Nebulas[i].Location.Y, Nebulas[i].Texture.Width, Nebulas[i].Texture.Height);
-                    spriteBatch.Draw(Nebulas[i].Texture, Nebulas[i].Location, null, Nebulas[i].Color, 0f, new Vector2(Nebulas[i].Width / 2, Nebulas[i].Height / 2), Nebulas[i].Scale, SpriteEffects.None, 0f);
-                }
+                Nebulas[i].Draw(spriteBatch);
             }
 
             for (int i = 0; i < Planets.Count; i++)
             {
-                if (Camera.InView(new Rectangle((int)Planets[i].Location.X, (int)Planets[i].Location.Y, Planets[i].Width, Planets[i].Height)))
-                {
-                    Rectangle destinationRectangle = new Rectangle((int)Planets[i].Location.X, (int)Planets[i].Location.Y, Planets[i].Width, Planets[i].Texture.Height);
-                    spriteBatch.Draw(Planets[i].Texture, Planets[i].Location, null, Color.White, 0f, Vector2.Zero, Planets[i].Scale, SpriteEffects.None, 0f);
-                }
+                Planets[i].Draw(spriteBatch);
             }
 
             spriteBatch.End();
