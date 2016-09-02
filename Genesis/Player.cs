@@ -24,6 +24,8 @@ namespace Genesis
         public int Height { get; set; }
         public Camera Camera { get; set; }
         public float Angle { get; set; }
+        public float AngularVelocity { get; set; }
+        public float Acceleration { get; set; }
 
         private Space space;
         public Space Space
@@ -57,10 +59,12 @@ namespace Genesis
             ParticleEngine = particleEngine;
             Space = space;
             Position = position;
-            Scale = 0.3f;
 
-            Velocity = 700;
+            Acceleration = 800;
+            Scale = 0.4f;
+            Velocity = 700f;
             AttackSpeed = 7;
+            AngularVelocity = 0.9f / Scale;
         }
 
         public void LoadContent(ContentManager Content)
@@ -85,12 +89,12 @@ namespace Genesis
         {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.D))
             {
-                Angle += 0.05f;
+                Angle += AngularVelocity * (float)gameTime.ElapsedGameTime.TotalSeconds;
             }
 
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.A))
             {
-                Angle -= 0.05f;
+                Angle -= AngularVelocity * (float)gameTime.ElapsedGameTime.TotalSeconds;
             }
 
             if (Velocity > 0)
@@ -108,12 +112,12 @@ namespace Genesis
             if (Keyboard.GetState().IsKeyUp(Keys.W))
             {
                 if (Velocity > 0)
-                    Velocity-=700f * (float)gameTime.ElapsedGameTime.TotalSeconds;
+                    Velocity -= Acceleration * (float)gameTime.ElapsedGameTime.TotalSeconds;
             }
             else
             {
-                if (Velocity < 700)
-                    Velocity+=700f * (float)gameTime.ElapsedGameTime.TotalSeconds;
+                if (Velocity < Acceleration)
+                    Velocity += Acceleration * (float)gameTime.ElapsedGameTime.TotalSeconds;
             }
         }
 

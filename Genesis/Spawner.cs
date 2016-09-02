@@ -83,7 +83,7 @@ namespace Genesis
 
             if (Counter <= 0)
             {
-                SpawnAsteroids(10);
+                SpawnAsteroids(100);
                 Counter = 10;
             }
 

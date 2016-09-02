@@ -57,6 +57,7 @@ namespace Genesis
                 Color fadingColor = Color;
 
                 spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, null, null, null, null, Space.Camera.getTransformation(graphics));
+                spriteBatch.Draw(Texture, Position, null, Color, 0f, new Vector2(Texture.Width / 2, Texture.Height / 2), 0.5f, SpriteEffects.None, 0f);
                 spriteBatch.Draw(Texture, Position, null, Color, 0f, new Vector2(Texture.Width / 2, Texture.Height / 2), Scale, SpriteEffects.None, 0f);
                 spriteBatch.End();
 
