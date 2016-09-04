@@ -72,7 +72,6 @@ namespace Genesis
 
         public void MoveCamera(Vector2 velocity)
         {
-            //if (Position.X + velocity.X > 0 && Position.X + velocity.X + Genesis.Width < 5000 && Position.Y + velocity.Y > 0 && Position.Y + velocity.Y + Genesis.Height < 4000)
                 position += velocity;
         }
     }

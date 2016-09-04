@@ -8,40 +8,23 @@ using System.Threading.Tasks;
 
 namespace Genesis
 {
-    class Bullet
+    class Bullet : GameObject
     {
-        public float Angle { get; set; }
         public Player Player { get; set; }
-        public Vector2 Position { get; set; }
-        public float Velocity { get; set; }
-        public Texture2D Texture { get; set; }
-        public Color Color { get; set; }
         public Space Space { get; set; }
-        public float Scale { get; set; }
-        public float Width { get; set; }
-        public float Height { get; set; }
         private int bulletPath;
 
-        public Bullet(Player player, Space space, Vector2 position, float velocity, Texture2D texture, Color color)
+        public Bullet(Player player, Space space, Texture2D texture, Vector2 position, float scale, float rotation, Vector2 direction, float velocity, Color color)
+            : base (texture, position, scale, rotation, direction, velocity, color )
         {
             Player = player;
             Space = space;
-            Position = position;
-            Velocity = velocity;
-            Texture = texture;
-            Color = color;
-            Angle = Player.Angle;
-
-            bulletPath = 0;
-            Scale = 0.07f;
-            Width = texture.Width * Scale;
-            Height = texture.Height * Scale;
         }
 
         public void Update(GameTime gameTime)
         {
-            Vector2 direction = new Vector2((float)Math.Cos(Angle),
-                                    (float)Math.Sin(Angle));
+            Vector2 direction = new Vector2((float)Math.Cos(Rotation),
+                                    (float)Math.Sin(Rotation));
             direction.Normalize();
 
             Vector2 newPosition = new Vector2(Position.X + direction.X * (Velocity * (float)gameTime.ElapsedGameTime.TotalSeconds), Position.Y + direction.Y * (Velocity * (float)gameTime.ElapsedGameTime.TotalSeconds));
@@ -57,14 +40,14 @@ namespace Genesis
                 Color fadingColor = Color;
 
                 spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, null, null, null, null, Space.Camera.getTransformation(graphics));
-                spriteBatch.Draw(Texture, Position, null, Color, 0f, new Vector2(Texture.Width / 2, Texture.Height / 2), 0.5f, SpriteEffects.None, 0f);
+                spriteBatch.Draw(Texture, Position, null, Color, 0f, new Vector2(Texture.Width / 2, Texture.Height / 2), 0.3f, SpriteEffects.None, 0f);
                 spriteBatch.Draw(Texture, Position, null, Color, 0f, new Vector2(Texture.Width / 2, Texture.Height / 2), Scale, SpriteEffects.None, 0f);
                 spriteBatch.End();
 
                 for (int i = 0; i < 10; i++)
                 {
-                    Vector2 direction = new Vector2((float)Math.Cos(Angle),
-                                    (float)Math.Sin(Angle));
+                    Vector2 direction = new Vector2((float)Math.Cos(Rotation),
+                                    (float)Math.Sin(Rotation));
                     direction.Normalize();
                     fadingColor = new Color(Color.R, Color.G, Color.B, fadingColor.A - 20);
                     Vector2 newLocation = Position - direction * (Velocity * i/200);

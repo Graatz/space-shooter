@@ -9,46 +9,28 @@ using System.Threading.Tasks;
 
 namespace Genesis
 {
-    class Particle
+    class Particle : GameObject
     {
-        private Texture2D texture;
-        public Vector2 position;
-        private Vector2 velocity;
-        private float angle;
-        private float angularVelocity;
-        public Color Color;
-        public int ttl;
-        public float Scale;
         public byte Transparency;
 
-        public Particle(Texture2D texture, Vector2 position, Vector2 velocity, float angle, float angularVelocity, int ttl, Color color)
+        public Particle(Texture2D texture, Vector2 position, float scale, float rotation, Vector2 direction, float velocity, Color color)
+            : base (texture, position, scale, rotation, direction, velocity, color)
         {
-            this.texture = texture;
-            this.position = position;
-            this.velocity = velocity;
-            this.angle = angle;
-            this.angularVelocity = angularVelocity;
-            this.Color = color;
-            this.ttl = ttl;
-
-            Scale = 0.3f;
             Transparency = 255;
         }
 
         public void Update(GameTime gameTime)
         {
             Transparency -= 5;
-            Color.A = Transparency;
-            position += (velocity * (float)gameTime.ElapsedGameTime.TotalSeconds * 2);
-            angle += angularVelocity * (float)gameTime.ElapsedGameTime.TotalSeconds;
+            Color = new Color(255, 255, 255, Transparency);
+            Position += Direction * (Velocity * (float)gameTime.ElapsedGameTime.TotalSeconds);
             Scale -= 0.5f * (float)gameTime.ElapsedGameTime.TotalSeconds;
         }
 
         public void Draw(SpriteBatch spriteBatch, GraphicsDevice graphics, Camera camera)
         {
-            //Rectangle sourceRectangle = new Rectangle((int)position.X, (int)position.Y, texture.Width, texture.Height);
             spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, null, null, null, null, camera.getTransformation(graphics));
-            spriteBatch.Draw(texture, position, null, Color, 0f, new Vector2(50, 50), Scale, SpriteEffects.None, 0f);
+            spriteBatch.Draw(Texture, Position, null, Color, Rotation, Origin, Scale, SpriteEffects.None, 0f);
             spriteBatch.End();
         }
     }

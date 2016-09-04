@@ -20,7 +20,7 @@ namespace Genesis
         public List<Texture2D> Textures { get; set; }
         public List<Texture2D> Objects { get; set; }
         public Camera Camera { get; set; }
-        private Random random;
+        public Random random;
         public float vortexRotation = 0;
 
         public Space(Camera camera, int width, int height)
@@ -72,7 +72,7 @@ namespace Genesis
 
         public void GeneratePlanets()
         {
-            for (int i = 0; i < 10; i++)
+            for (int i = 0; i < (Width + Height) / 1000; i++)
             {
                 bool repeat;
                 do
@@ -112,9 +112,9 @@ namespace Genesis
 
         public void GenerateNebulas()
         {
-            for (int i = 0; i < 2000; i++)
+            for (int i = 0; i < (Width + Height) / 5; i++)
             {
-                Texture2D nebulaTexture = Textures[1];
+                Texture2D nebulaTexture = Textures[5];
                 Vector2 nebulaLocation = new Vector2(random.Next(Width), random.Next(Height));
                 float scale = 1.8f;
                 Planet nebula = new Planet(Camera, nebulaTexture, nebulaLocation, scale, new Color(255, 255, 255, random.Next(30, 55)), new Vector2(nebulaTexture.Width/2, nebulaTexture.Height/2));
@@ -134,7 +134,7 @@ namespace Genesis
 
         public void GenerateStars()
         {
-            for (int i = 0; i < 6000; i++)
+            for (int i = 0; i < (Width + Height) / 2; i++)
             {
                 bool repeat;
                 do

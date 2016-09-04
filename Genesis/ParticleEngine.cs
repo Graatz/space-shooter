@@ -26,15 +26,14 @@ namespace Genesis
 
         public Particle GenerateParticle()
         {
-            Texture2D texture = textures[0];
+            float scale = 0.3f;
+            Texture2D texture = textures[1];
             Vector2 position = emitterLocation;
-            Vector2 velocity = new Vector2((float)random.NextDouble() * 300 - (float)random.NextDouble() * 300, (float)random.NextDouble() * 300 - (float)random.NextDouble() * 300);
-            float angle = 0;
-            float angularVelocity = (float)random.NextDouble() * 100;
+            Vector2 direction = new Vector2((float)random.NextDouble() * 300 - (float)random.NextDouble() * 300, (float)random.NextDouble() * 300 - (float)random.NextDouble() * 300);
             Color color = Color.White;
-            int ttl = 20 + random.Next(40);
+            float velocity = random.Next(2, 5);
 
-            return new Particle(texture, emitterLocation, velocity, angle, angularVelocity, ttl, color);
+            return new Particle(texture, emitterLocation, scale, 0f, direction, velocity, color);
         }
 
         public void GenerateParticles(int number, Vector2 location)

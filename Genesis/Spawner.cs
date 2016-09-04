@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,47 +12,52 @@ namespace Genesis
 {
     class Spawner
     {
+        public Player Player { get; set; }
+        public Space Space { get; set; }
         public List<Enemy> Enemies { get; set; }
         public List<Asteroid> Asteroids { get; set; }
-        public Player Player { get; set; }
-        public GraphicsDevice GraphicsDevice { get; set; }
-        public Space Space { get; set; }
         public double Counter { get; set; }
 
         private List<Texture2D> enemyTextures;
-        private Random random;
+        private List<Texture2D> asteroidTextures;
 
-        public Spawner(Space space, Player player, GraphicsDevice graphicsDevice)
+        public Spawner(Space space, Player player)
         {
             Space = space;
             Player = player;
-            GraphicsDevice = graphicsDevice;
-            Player.EnemySpawner = this;     
+            Player.Spawner = this; 
         }
 
         public void LoadContent(ContentManager Content)
         {
             Enemies = new List<Enemy>();
             Asteroids = new List<Asteroid>();
-            random = new Random();
+
+            asteroidTextures = new List<Texture2D>();
+            asteroidTextures.Add(Content.Load<Texture2D>("Textures/asteroid1"));
+            asteroidTextures.Add(Content.Load<Texture2D>("Textures/asteroid2"));
 
             enemyTextures = new List<Texture2D>();
-            enemyTextures.Add(Content.Load<Texture2D>("Textures/asteroid1"));
-            enemyTextures.Add(Content.Load<Texture2D>("Textures/asteroid2"));
+            enemyTextures.Add(Content.Load<Texture2D>("Textures/enemy"));
         }
 
         public void SpawnAsteroid()
         {
-            Texture2D texture = enemyTextures[random.Next(enemyTextures.Count)];
+            Texture2D texture = asteroidTextures[Space.random.Next(asteroidTextures.Count)];
 
-            float scale = 0.7f / (float)(random.NextDouble() * (1.0 - 4.0) + 4.0);
-            float rotation = (float)random.NextDouble();
-            Vector2 position = new Vector2(random.Next(-900, Space.Width - 900), random.Next(-900, -300));
-            float velocity = random.Next(200, 400);
-            Vector2 direction = new Vector2(random.Next(1, 10), random.Next(1, 10));
+            float scale = 0.7f / (float)(Space.random.NextDouble() * (1.0 - 4.0) + 4.0);
+            float rotation = (float)Space.random.NextDouble();
+            Vector2 position = new Vector2(Space.random.Next(-900, Space.Width - 900), Space.random.Next(-900, -300));
+            float velocity = Space.random.Next(200, 400);
+            Vector2 direction = new Vector2(Space.random.Next(1, 10), Space.random.Next(1, 10));
             direction.Normalize();
 
-            Asteroid asteroid = new Asteroid(Space, texture, position, rotation, scale, velocity, direction);
+            int R = (int)(scale * 300);
+            int G = (int)(scale * 300);
+            int B = (int)(scale * 300);
+            Color color = new Color(R, G, B);
+
+            Asteroid asteroid = new Asteroid(Space, texture, position, rotation, scale, velocity, direction, color);
             Asteroids.Add(asteroid);
         }
 
@@ -65,7 +71,16 @@ namespace Genesis
 
         public void SpawnEnemy()
         {
-            Enemy enemy = new Enemy(Space, Player, GraphicsDevice, enemyTextures[0], new Vector2(random.Next(Space.Width), random.Next(Space.Height)));
+            Texture2D texture = enemyTextures[Space.random.Next(enemyTextures.Count)];
+            float scale = 0.6f / (float)(Space.random.NextDouble() * (3.0 - 4.0) + 4.0);
+            Vector2 position = new Vector2(Space.random.Next(Space.Width + 300, Space.Width + 900), Space.random.Next(Space.Height + 300, Space.Height + 900));
+            float velocity = Space.random.Next(200, 400);
+            Vector2 target = new Vector2(Space.random.Next(300, Space.Width - 300), Space.random.Next(300, 700));
+            float rotation = (float)Math.Atan2(target.Y - position.Y, target.X - position.X);
+            Vector2 direction = new Vector2((float)Math.Cos(rotation), (float)Math.Sin(rotation));
+            direction.Normalize();
+
+            Enemy enemy = new Enemy(Space, texture, position, rotation, scale, velocity, direction, target);
             Enemies.Add(enemy);
         }
 
@@ -83,13 +98,14 @@ namespace Genesis
 
             if (Counter <= 0)
             {
-                SpawnAsteroids(100);
-                Counter = 10;
+                SpawnAsteroids(10);
+                Counter = 1;
             }
 
             for (int i = 0; i < Enemies.Count; i++)
             {
-                Enemies[i].Update();
+                Enemies[i].Update(gameTime);
+                Debug.WriteLine("Enemy " + i + " target: " + Enemies[i].Target.X + " " + Enemies[i].Target.Y);
             }
 
             for (int i = 0; i < Asteroids.Count; i++)
