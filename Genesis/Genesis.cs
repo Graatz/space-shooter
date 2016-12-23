@@ -8,8 +8,8 @@ namespace Genesis
 {
     public class Genesis : Game
     {
-        public static int Width = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
-        public static int Height = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
+        public static int Width = 1366;
+        public static int Height = 768;
         public static Random random;
 
         GraphicsDeviceManager graphics;
@@ -27,7 +27,7 @@ namespace Genesis
             graphics = new GraphicsDeviceManager(this);
             graphics.PreferredBackBufferWidth = Width;
             graphics.PreferredBackBufferHeight = Height;
-            graphics.IsFullScreen = true;
+            graphics.IsFullScreen = false;
             graphics.SynchronizeWithVerticalRetrace = true;
             //graphics.PreferredBackBufferWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
             //graphics.PreferredBackBufferHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
