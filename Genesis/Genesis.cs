@@ -8,8 +8,8 @@ namespace Genesis
 {
     public class Genesis : Game
     {
-        public static int Width = 2560;
-        public static int Height = 1080;
+        public static int Width = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
+        public static int Height = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
         public static Random random;
 
         GraphicsDeviceManager graphics;
