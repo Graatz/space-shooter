@@ -17,14 +17,16 @@ namespace Genesis
         public List<Enemy> Enemies { get; set; }
         public List<Asteroid> Asteroids { get; set; }
         public double Counter { get; set; }
+        public Camera Camera { get; set; }
 
         private List<Texture2D> enemyTextures;
         private List<Texture2D> asteroidTextures;
 
-        public Spawner(Space space, Player player)
+        public Spawner(Space space, Player player, Camera camera)
         {
             Space = space;
             Player = player;
+            Camera = camera;
             Player.Spawner = this; 
         }
 
@@ -80,7 +82,7 @@ namespace Genesis
             Vector2 direction = new Vector2((float)Math.Cos(rotation), (float)Math.Sin(rotation));
             direction.Normalize();
 
-            Enemy enemy = new Enemy(Space, texture, position, rotation, scale, velocity, direction, target);
+            Enemy enemy = new Enemy(Space, texture, position, Camera, rotation, scale, velocity, direction, target);
             Enemies.Add(enemy);
         }
 
@@ -105,7 +107,6 @@ namespace Genesis
             for (int i = 0; i < Enemies.Count; i++)
             {
                 Enemies[i].Update(gameTime);
-                Debug.WriteLine("Enemy " + i + " target: " + Enemies[i].Target.X + " " + Enemies[i].Target.Y);
             }
 
             for (int i = 0; i < Asteroids.Count; i++)

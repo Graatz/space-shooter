@@ -16,12 +16,14 @@ namespace Genesis
         public Space Space { get; set; }
         public Vector2 Target { get; set; }
         public Vector2 InitialPosition { get; set; }
+        public Camera Camera { get; set; }
 
-        public Enemy(Space space, Texture2D texture, Vector2 position, float rotation, float scale, float velocity, Vector2 direction, Vector2 target)
+        public Enemy(Space space, Texture2D texture, Vector2 position, Camera camera, float rotation, float scale, float velocity, Vector2 direction, Vector2 target)
              : base (texture, position, scale, rotation, direction, velocity, Color.White)
         {
             Space = space;
             InitialPosition = Position;
+            Camera = camera;
             Direction = direction;
             Target = target;
         }
@@ -58,9 +60,12 @@ namespace Genesis
 
         public void Draw(SpriteBatch spriteBatch, GraphicsDevice graphics)
         {
-            spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, null, null, null, null, Space.Camera.getTransformation(graphics));
-            spriteBatch.Draw(Texture, Position, null, Color, Rotation, new Vector2(Texture.Width / 2, Texture.Height / 2), Scale, SpriteEffects.None, 0f);
-            spriteBatch.End();
+            if (Camera.InView(new Rectangle((int)Position.X, (int)Position.Y, Width, Height)))
+            {
+                spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, null, null, null, null, Space.Camera.getTransformation(graphics));
+                spriteBatch.Draw(Texture, Position, null, Color, Rotation, new Vector2(Texture.Width / 2, Texture.Height / 2), Scale, SpriteEffects.None, 0f);
+                spriteBatch.End();
+            }
         }
     }
 }

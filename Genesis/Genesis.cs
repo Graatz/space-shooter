@@ -8,8 +8,8 @@ namespace Genesis
 {
     public class Genesis : Game
     {
-        public static int Width = 1366;
-        public static int Height = 768;
+        public static int Width = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
+        public static int Height = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
         public static Random random;
 
         GraphicsDeviceManager graphics;
@@ -27,7 +27,7 @@ namespace Genesis
             graphics = new GraphicsDeviceManager(this);
             graphics.PreferredBackBufferWidth = Width;
             graphics.PreferredBackBufferHeight = Height;
-            graphics.IsFullScreen = false;
+            graphics.IsFullScreen = true;
             graphics.SynchronizeWithVerticalRetrace = true;
             //graphics.PreferredBackBufferWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
             //graphics.PreferredBackBufferHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
@@ -61,9 +61,9 @@ namespace Genesis
             player = new Player(camera, space, particleEngine, new Vector2(space.Width/2, space.Height/2), 0.3f, 0f, 0f, Color.White);
             player.LoadContent(Content);
 
-            spawner = new Spawner(space, player);
+            spawner = new Spawner(space, player, camera);
             spawner.LoadContent(Content);
-            spawner.SpawnEnemies(10);
+            spawner.SpawnEnemies(30);
         }
 
         protected override void UnloadContent()

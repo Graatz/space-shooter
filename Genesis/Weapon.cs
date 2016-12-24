@@ -29,13 +29,13 @@ namespace Genesis
             Bullets = new List<Bullet>();
         }
 
-        public void Update(GameTime gameTime)
+        public void Update(GameTime gameTime, Camera camera)
         {
             Shoot(gameTime);
-            UpdateBullets(gameTime);
+            UpdateBullets(gameTime, camera);
         }
 
-        public void UpdateBullets(GameTime gameTime)
+        public void UpdateBullets(GameTime gameTime, Camera camera)
         {
             for (int i = 0; i < Bullets.Count; i++)
             {
@@ -48,15 +48,19 @@ namespace Genesis
                 {
                     for (int j = 0; j < Player.Spawner.Enemies.Count; j++)
                     {
-                        Rectangle bulletRectangle = new Rectangle((int)Bullets[i].Position.X, (int)Bullets[i].Position.Y, (int)(Bullets[i].Width), (int)(Bullets[i].Height));
-                        Rectangle enemyRectangle = new Rectangle((int)Player.Spawner.Enemies[j].Position.X, (int)Player.Spawner.Enemies[j].Position.Y, (int)Player.Spawner.Enemies[j].Width, (int)Player.Spawner.Enemies[j].Height);
-                        if (bulletRectangle.Intersects(enemyRectangle))
+                       if (camera.InView(new Rectangle((int)Player.Spawner.Enemies.ElementAt(j).Position.X, (int)Player.Spawner.Enemies.ElementAt(j).Position.Y,
+                            Player.Spawner.Enemies.ElementAt(j).Width, Player.Spawner.Enemies.ElementAt(j).Height)))
                         {
-                            Player.ParticleEngine.GenerateParticles(70, Bullets[i].Position);
-                            Bullets.RemoveAt(i);
-                            Player.Spawner.Enemies.RemoveAt(j);
-                            Player.Spawner.SpawnEnemies(1);
-                            break;
+                            Rectangle bulletRectangle = new Rectangle((int)Bullets[i].Position.X, (int)Bullets[i].Position.Y, (int)(Bullets[i].Width), (int)(Bullets[i].Height));
+                            Rectangle enemyRectangle = new Rectangle((int)Player.Spawner.Enemies[j].Position.X, (int)Player.Spawner.Enemies[j].Position.Y, (int)Player.Spawner.Enemies[j].Width, (int)Player.Spawner.Enemies[j].Height);
+                            if (bulletRectangle.Intersects(enemyRectangle))
+                            {
+                                Player.ParticleEngine.GenerateParticles(70, Bullets[i].Position);
+                                Bullets.RemoveAt(i);
+                                Player.Spawner.Enemies.RemoveAt(j);
+                                Player.Spawner.SpawnEnemies(1);
+                                break;
+                            }
                         }
                     }
                 }

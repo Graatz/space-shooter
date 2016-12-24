@@ -90,7 +90,7 @@ namespace Genesis
         public void Update(GameTime gameTime)
         {
             Move(gameTime);
-            Weapon.Update(gameTime);
+            Weapon.Update(gameTime, Camera);
         }
 
         public void Draw(SpriteBatch spriteBatch, GraphicsDevice graphics)

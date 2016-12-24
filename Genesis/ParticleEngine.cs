@@ -27,7 +27,7 @@ namespace Genesis
         public Particle GenerateParticle()
         {
             float scale = 0.3f;
-            Texture2D texture = textures[1];
+            Texture2D texture = textures[0];
             Vector2 position = emitterLocation;
             Vector2 direction = new Vector2((float)random.NextDouble() * 300 - (float)random.NextDouble() * 300, (float)random.NextDouble() * 300 - (float)random.NextDouble() * 300);
             Color color = Color.White;
