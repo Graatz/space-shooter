@@ -6,10 +6,10 @@ Im planing on making it a simple shooter game with cool additions.
 # How to play
 If you'd like to try playing my game, you can find the release version right [HERE](https://drive.google.com/file/d/0B6Ho1ILoFP1GT05xYXZrRHhEMTA/view?usp=sharing)
 
-Controls: 
-A, D - flight direction
-W - acceleration
-Left mouse - shooting
+##Controls: <br />
+A, D - flight direction<br />
+W - acceleration<br />
+Left mouse - shooting<br />
 ESC - exit the game
 
 # Screenshots:
