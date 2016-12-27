@@ -74,7 +74,7 @@ namespace Genesis
         public void SpawnEnemy()
         {
             Texture2D texture = enemyTextures[Space.random.Next(enemyTextures.Count)];
-            float scale = 0.6f / (float)(Space.random.NextDouble() * (3.0 - 4.0) + 4.0);
+            float scale = 0.8f / (float)(Space.random.NextDouble() * (3.0 - 4.0) + 4.0);
             Vector2 position = new Vector2(Space.random.Next(Space.Width + 300, Space.Width + 900), Space.random.Next(Space.Height + 300, Space.Height + 900));
             float velocity = Space.random.Next(200, 400);
             Vector2 target = new Vector2(Space.random.Next(300, Space.Width - 300), Space.random.Next(300, 700));

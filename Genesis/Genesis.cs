@@ -10,6 +10,7 @@ namespace Genesis
     {
         public static int Width = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
         public static int Height = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
+        public static bool Paused = true;
         public static Random random;
 
         GraphicsDeviceManager graphics;
@@ -20,6 +21,7 @@ namespace Genesis
         Space space;
         Texture2D cursor;
         Camera camera;
+        Menu menu;
 
         public Genesis()
         {
@@ -36,7 +38,6 @@ namespace Genesis
             Content.RootDirectory = "Content";
 
             IsFixedTimeStep = false;
-            IsMouseVisible = false;
         }
 
         protected override void Initialize()
@@ -46,6 +47,9 @@ namespace Genesis
 
         protected override void LoadContent()
         {
+            menu = new Menu();
+            menu.LoadContent(Content);
+
             cursor = Content.Load<Texture2D>("Textures/cursor");
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
@@ -73,30 +77,41 @@ namespace Genesis
 
         protected override void Update(GameTime gameTime)
         {
-            if (Keyboard.GetState().IsKeyDown(Keys.Escape))
-                Exit();
+            if (Paused)
+            {
+                menu.Update(gameTime, this);
+            }
+            else
+            {
+                if (Keyboard.GetState().IsKeyDown(Keys.Escape))
+                    Paused = true;
 
-            if (Mouse.GetState().RightButton == ButtonState.Pressed)
-                particleEngine.GenerateParticles(50, new Vector2(Mouse.GetState().Position.X + camera.Position.X, Mouse.GetState().Position.Y + camera.Position.Y));
+                if (Mouse.GetState().RightButton == ButtonState.Pressed)
+                    particleEngine.GenerateParticles(50, new Vector2(Mouse.GetState().Position.X + camera.Position.X, Mouse.GetState().Position.Y + camera.Position.Y));
 
-            player.Update(gameTime);
-            spawner.Update(gameTime);
-            particleEngine.Update(gameTime);
-
+                player.Update(gameTime);
+                spawner.Update(gameTime);
+                particleEngine.Update(gameTime);
+            }
             base.Update(gameTime);
         }
 
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.Black);
-            space.Draw(spriteBatch, GraphicsDevice);
-            player.Draw(spriteBatch, GraphicsDevice);
-            spawner.Draw(spriteBatch, GraphicsDevice);
-            particleEngine.Draw(spriteBatch, GraphicsDevice, camera);
+            if (Paused)
+                menu.Draw(spriteBatch, GraphicsDevice);
+            else
+            {
+                GraphicsDevice.Clear(Color.Black);
+                space.Draw(spriteBatch, GraphicsDevice);
+                player.Draw(spriteBatch, GraphicsDevice);
+                particleEngine.Draw(spriteBatch, GraphicsDevice, camera);
+                spawner.Draw(spriteBatch, GraphicsDevice);
 
-            spriteBatch.Begin();
-            spriteBatch.Draw(cursor, new Rectangle(Mouse.GetState().Position - new Point(5, 5), new Point(cursor.Width, cursor.Height)), Color.White);
-            spriteBatch.End();
+                /*spriteBatch.Begin();
+                spriteBatch.Draw(cursor, new Rectangle(Mouse.GetState().Position - new Point(5, 5), new Point(cursor.Width, cursor.Height)), Color.White);
+                spriteBatch.End();*/
+            }
             base.Draw(gameTime);
         }
     }

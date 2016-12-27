@@ -24,7 +24,8 @@ namespace Genesis
             Transparency -= 5;
             Color = new Color(255, 255, 255, Transparency);
             Position += Direction * (Velocity * (float)gameTime.ElapsedGameTime.TotalSeconds);
-            Scale -= 0.6f * (float)gameTime.ElapsedGameTime.TotalSeconds;
+            Scale -= 0.5f * (float)gameTime.ElapsedGameTime.TotalSeconds;
+            Velocity /= 1.2f;
         }
 
         public void Draw(SpriteBatch spriteBatch, GraphicsDevice graphics, Camera camera)

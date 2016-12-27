@@ -3,10 +3,6 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Genesis
 {
@@ -83,7 +79,10 @@ namespace Genesis
                     float scale = 1.0f / (float)(random.NextDouble() * (1.0 - 4.0) + 4.0);
                     int randomTexture = random.Next(Objects.Count - 2);
                     Texture2D planetTexture = Objects[randomTexture];
-                    Vector2 planetLocation = new Vector2(random.Next((int)(planetTexture.Width * scale), Width - (int)(planetTexture.Width * scale)), random.Next((int)(planetTexture.Height * scale), Height - (int)(planetTexture.Height * scale)));
+                    Vector2 planetLocation = new Vector2(random.Next((int)(planetTexture.Width * scale), 
+                        Width - (int)(planetTexture.Width * scale)), 
+                        random.Next((int)(planetTexture.Height * scale), 
+                        Height - (int)(planetTexture.Height * scale)));
                     Planet planet = new Planet(Camera, planetTexture, planetLocation, scale, Color.White, Vector2.Zero);
 
                     if (numberOfPlanets >= 1)
@@ -134,7 +133,7 @@ namespace Genesis
 
         public void GenerateStars()
         {
-            for (int i = 0; i < (Width + Height) / 2; i++)
+            for (int i = 0; i < (Width + Height) / 0.7; i++)
             {
                 bool repeat;
                 do

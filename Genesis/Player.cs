@@ -54,12 +54,12 @@ namespace Genesis
         public void Move(GameTime gameTime)
         {
             Direction = new Vector2((float)Math.Cos(Rotation), (float)Math.Sin(Rotation));
-            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.D))
+            if (Keyboard.GetState().IsKeyDown(Keys.D) || Keyboard.GetState().IsKeyDown(Keys.Right))
             {
                 Rotation += AngularVelocity * (float)gameTime.ElapsedGameTime.TotalSeconds;
             }
 
-            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.A))
+            if (Keyboard.GetState().IsKeyDown(Keys.A) || Keyboard.GetState().IsKeyDown(Keys.Left))
             {
                 Rotation -= AngularVelocity * (float)gameTime.ElapsedGameTime.TotalSeconds;
             }
@@ -75,7 +75,7 @@ namespace Genesis
                 Camera.MoveCamera(direction * (Velocity * (float)gameTime.ElapsedGameTime.TotalSeconds));
             }
 
-            if (Keyboard.GetState().IsKeyUp(Keys.W))
+            if (Keyboard.GetState().IsKeyUp(Keys.W) && Keyboard.GetState().IsKeyUp(Keys.Up))
             {
                 if (Velocity > 0)
                     Velocity -= Acceleration / 2 * (float)gameTime.ElapsedGameTime.TotalSeconds;

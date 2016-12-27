@@ -73,7 +73,7 @@ namespace Genesis
 
             if (Counter <= 0)
             {
-                if (Mouse.GetState().LeftButton == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Space))
+                if (Mouse.GetState().LeftButton == ButtonState.Pressed)
                 {
                     Vector2 bulletPosition = new Vector2(Player.Position.X, Player.Position.Y);
                     Bullets.Add(new Bullet(Player, Player.Space, BulletTexture, bulletPosition, BulletScale, Player.Rotation, new Vector2((float)Math.Cos(Player.Rotation), (float)Math.Sin(Player.Rotation)), BulletVelocity + Player.Velocity, Color.White));

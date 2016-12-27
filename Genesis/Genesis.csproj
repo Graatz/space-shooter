@@ -62,6 +62,7 @@
     <Compile Include="Camera.cs" />
     <Compile Include="Enemy.cs" />
     <Compile Include="GameObject.cs" />
+    <Compile Include="Menu.cs" />
     <Compile Include="Spawner.cs" />
     <Compile Include="Genesis.cs" />
     <Compile Include="Particle.cs" />
