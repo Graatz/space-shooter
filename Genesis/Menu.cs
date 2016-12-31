@@ -7,29 +7,28 @@ using System.Collections.Generic;
 
 namespace Genesis
 {
-    class Menu
+    class Menu : GameState
     {
-        private SpriteFont font;
-        public List<String> Options = new List<String>()
+        private CurrentOptions CurrentOptions;
+        public void Initialize()
         {
-            "Start game",
-            "Exit"
-        };
-        public String ActiveOption { get; set; } 
-        public int ActiveNumber { get; set; }
-        KeyboardState oldState;
+            List<String> availableOptions = new List<String>()
+            {
+                "Start game",
+                "Options",
+                "Exit"
+            };
 
-        public Menu()
-        {
-            ActiveOption = Options[0];
+            CurrentOptions = new CurrentOptions(availableOptions);
         }
 
-        public void LoadContent(ContentManager Content)
+        KeyboardState oldState { get; set; }
+        public Menu(Stack<GameState> gameStates, GraphicsDeviceManager graphics, ContentManager content) : base(gameStates, graphics, content)
         {
-            font = Content.Load<SpriteFont>("Fonts/Menu");
+            Initialize();
         }
 
-        public void Update(GameTime gameTime, Game game)
+        public override void Update(GameTime gameTime, Game game)
         {
             KeyboardState newState = Keyboard.GetState();
 
@@ -41,11 +40,16 @@ namespace Genesis
             {
                 GoUp();
             }
-            else if (newState.IsKeyDown(Keys.Space) && ActiveOption.Equals("Start game"))
+            else if (newState.IsKeyDown(Keys.Space) && oldState.IsKeyUp(Keys.Space) && CurrentOptions.ActiveOption.Equals("Start game"))
             {
                 Genesis.Paused = false;
             }
-            else if (newState.IsKeyDown(Keys.Space) && ActiveOption.Equals("Exit"))
+            else if (newState.IsKeyDown(Keys.Space) && oldState.IsKeyUp(Keys.Space) && CurrentOptions.ActiveOption.Equals("Options"))
+            {
+                Options options = new Options(GameState.GameStates, Graphics, Content);
+                CurrentOptions.ActiveOptionNumber = 0;
+            }
+            else if (newState.IsKeyDown(Keys.Space) && oldState.IsKeyUp(Keys.Space) && CurrentOptions.ActiveOption.Equals("Exit"))
             {
                 game.Exit();
             }
@@ -55,33 +59,31 @@ namespace Genesis
 
         public void GoDown()
         {
-            if (ActiveNumber < Options.Count - 1)
+            if (CurrentOptions.ActiveOptionNumber < CurrentOptions.AvailableOptions.Count - 1)
             {
-                ActiveNumber++;
-                ActiveOption = Options[ActiveNumber];
+                CurrentOptions.ActiveOptionNumber++;
             }
         }
 
         public void GoUp()
         {
-            if (ActiveNumber > 0)
+            if (CurrentOptions.ActiveOptionNumber > 0)
             {
-                ActiveNumber--;
-                ActiveOption = Options[ActiveNumber];
+                CurrentOptions.ActiveOptionNumber--;
             }
         }
 
-        public void Draw(SpriteBatch spriteBatch, GraphicsDevice graphicsDevice)
+        public override void Draw(SpriteBatch spriteBatch, GraphicsDevice graphicsDevice)
         {
             graphicsDevice.Clear(new Color(10, 10, 10, 255));
             spriteBatch.Begin();
             
-            for (int i = 0; i < Options.Count; i++)
+            for (int i = 0; i < CurrentOptions.AvailableOptions.Count; i++)
             {
-                if (ActiveOption.Equals(Options[i]))
-                    spriteBatch.DrawString(font, "> " + Options[i], new Vector2(30, 30 + i * 50), Color.BlueViolet, 0f, Vector2.Zero, 1, SpriteEffects.None, 0f);
+                if (CurrentOptions.ActiveOption.Equals(CurrentOptions.AvailableOptions[i]))
+                    spriteBatch.DrawString(Font, "> " + CurrentOptions.AvailableOptions[i], new Vector2(30, 30 + i * 50), HighlightColor, 0f, Vector2.Zero, 1, SpriteEffects.None, 0f);
                 else
-                    spriteBatch.DrawString(font, Options[i], new Vector2(30, 30 + i * 50), Color.White, 0f, Vector2.Zero, 1, SpriteEffects.None, 0f);
+                    spriteBatch.DrawString(Font, CurrentOptions.AvailableOptions[i], new Vector2(30, 30 + i * 50), Color.White, 0f, Vector2.Zero, 1, SpriteEffects.None, 0f);
             }
             spriteBatch.End();
         }

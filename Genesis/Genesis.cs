@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 
 namespace Genesis
@@ -21,7 +22,7 @@ namespace Genesis
         Space space;
         Texture2D cursor;
         Camera camera;
-        Menu menu;
+        GameState gameState;
 
         public Genesis()
         {
@@ -29,10 +30,8 @@ namespace Genesis
             graphics = new GraphicsDeviceManager(this);
             graphics.PreferredBackBufferWidth = Width;
             graphics.PreferredBackBufferHeight = Height;
-            graphics.IsFullScreen = true;
+            graphics.IsFullScreen = false;
             graphics.SynchronizeWithVerticalRetrace = true;
-            //graphics.PreferredBackBufferWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
-            //graphics.PreferredBackBufferHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
             graphics.ApplyChanges();
 
             Content.RootDirectory = "Content";
@@ -47,8 +46,9 @@ namespace Genesis
 
         protected override void LoadContent()
         {
-            menu = new Menu();
-            menu.LoadContent(Content);
+            GameState.GameStates = new Stack<GameState>();
+            gameState = new GameState(new Stack<GameState>(), graphics, Content);
+            GameState.GameStates.Push(new Menu(GameState.GameStates, graphics, Content));
 
             cursor = Content.Load<Texture2D>("Textures/cursor");
             spriteBatch = new SpriteBatch(GraphicsDevice);
@@ -70,6 +70,11 @@ namespace Genesis
             spawner.SpawnEnemies(30);
         }
 
+        public static void StartNewGame()
+        {
+
+        }
+
         protected override void UnloadContent()
         {
 
@@ -79,7 +84,7 @@ namespace Genesis
         {
             if (Paused)
             {
-                menu.Update(gameTime, this);
+                gameState.Update(gameTime, this);
             }
             else
             {
@@ -99,7 +104,7 @@ namespace Genesis
         protected override void Draw(GameTime gameTime)
         {
             if (Paused)
-                menu.Draw(spriteBatch, GraphicsDevice);
+                gameState.Draw(spriteBatch, GraphicsDevice);
             else
             {
                 GraphicsDevice.Clear(Color.Black);
