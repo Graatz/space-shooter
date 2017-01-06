@@ -13,6 +13,7 @@ namespace Genesis
         public List<Planet> Stars { get; set; }
         public List<Planet> Nebulas { get; set; }
         public List<Planet> Planets { get; set; }
+        public List<Sun> Suns { get; set; }
         public List<Texture2D> Textures { get; set; }
         public List<Texture2D> Objects { get; set; }
         public Camera Camera { get; set; }
@@ -36,6 +37,7 @@ namespace Genesis
             Stars = new List<Planet>();
             Nebulas = new List<Planet>();
             Planets = new List<Planet>();
+            Suns = new List<Sun>();
 
             Texture2D pixel = new Texture2D(GraphicsDevice, 1, 1);
             Color[] colors = new Color[1];
@@ -113,7 +115,7 @@ namespace Genesis
         {
             for (int i = 0; i < (Width + Height) / 5; i++)
             {
-                Texture2D nebulaTexture = Textures[5];
+                Texture2D nebulaTexture = Textures[1];
                 Vector2 nebulaLocation = new Vector2(random.Next(Width), random.Next(Height));
                 float scale = 1.8f;
                 Planet nebula = new Planet(Camera, nebulaTexture, nebulaLocation, scale, new Color(255, 255, 255, random.Next(30, 55)), new Vector2(nebulaTexture.Width/2, nebulaTexture.Height/2));
@@ -126,9 +128,9 @@ namespace Genesis
             float scale = 2.0f;
             Texture2D planetTexture = Objects[4];
             Vector2 planetLocation = new Vector2(random.Next((int)(planetTexture.Width * scale), Width - (int)(planetTexture.Width * scale)), random.Next((int)(planetTexture.Height * scale), Height - (int)(planetTexture.Height * scale)));
-            Planet planet = new Planet(Camera, planetTexture, planetLocation, scale, Color.White, Vector2.Zero);
+            Sun sun = new Sun(Camera, planetTexture, planetLocation, scale, Color.White, new Vector2(planetTexture.Width / 2, planetTexture.Height / 2));
 
-            Planets.Add(planet);
+            Suns.Add(sun);
         }
 
         public void GenerateStars()
@@ -170,6 +172,14 @@ namespace Genesis
             }
         }
 
+        public void Update(GameTime gameTime)
+        {
+            for (int i = 0; i < Suns.Count; i++)
+            {
+                Suns[i].Update(gameTime);
+            }
+        }
+
         public void Draw(SpriteBatch spriteBatch, GraphicsDevice graphics)
         {
             spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, null, null, null, null, Camera.getTransformation(graphics));
@@ -187,6 +197,11 @@ namespace Genesis
             for (int i = 0; i < Planets.Count; i++)
             {
                 Planets[i].Draw(spriteBatch);
+            }
+
+            for (int i = 0; i < Suns.Count; i++)
+            {
+                Suns[i].Draw(spriteBatch);
             }
 
             spriteBatch.End();

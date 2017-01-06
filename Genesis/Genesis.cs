@@ -9,6 +9,7 @@ namespace Genesis
 {
     public class Genesis : Game
     {
+        public static KeyboardState oldState;
         public static int Width = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
         public static int Height = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
         public static bool Paused = true;
@@ -82,13 +83,14 @@ namespace Genesis
 
         protected override void Update(GameTime gameTime)
         {
+            KeyboardState newState = Keyboard.GetState();
             if (Paused)
             {
                 gameState.Update(gameTime, this);
             }
             else
             {
-                if (Keyboard.GetState().IsKeyDown(Keys.Escape))
+                if (newState.IsKeyDown(Keys.Escape) && Genesis.oldState.IsKeyUp(Keys.Escape) && Genesis.Paused == false)
                     Paused = true;
 
                 if (Mouse.GetState().RightButton == ButtonState.Pressed)
@@ -97,7 +99,9 @@ namespace Genesis
                 player.Update(gameTime);
                 spawner.Update(gameTime);
                 particleEngine.Update(gameTime);
+                space.Update(gameTime);
             }
+            Genesis.oldState = newState;
             base.Update(gameTime);
         }
 
@@ -112,6 +116,7 @@ namespace Genesis
                 player.Draw(spriteBatch, GraphicsDevice);
                 particleEngine.Draw(spriteBatch, GraphicsDevice, camera);
                 spawner.Draw(spriteBatch, GraphicsDevice);
+                player.UI.Draw(spriteBatch, GraphicsDevice);
 
                 /*spriteBatch.Begin();
                 spriteBatch.Draw(cursor, new Rectangle(Mouse.GetState().Position - new Point(5, 5), new Point(cursor.Width, cursor.Height)), Color.White);

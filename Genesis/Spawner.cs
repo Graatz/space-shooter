@@ -76,9 +76,9 @@ namespace Genesis
             Texture2D texture = enemyTextures[Space.random.Next(enemyTextures.Count)];
             float scale = 0.8f / (float)(Space.random.NextDouble() * (3.0 - 4.0) + 4.0);
             Vector2 position = new Vector2(Space.random.Next(Space.Width + 300, Space.Width + 900), Space.random.Next(Space.Height + 300, Space.Height + 900));
-            float velocity = Space.random.Next(200, 400);
+            float velocity = Space.random.Next(600, 600);
             Vector2 target = new Vector2(Space.random.Next(300, Space.Width - 300), Space.random.Next(300, 700));
-            float rotation = (float)Math.Atan2(target.Y - position.Y, target.X - position.X);
+            float rotation = (float)Math.Round(Math.Atan2(target.Y - position.Y, target.X - position.X), 1);
             Vector2 direction = new Vector2((float)Math.Cos(rotation), (float)Math.Sin(rotation));
             direction.Normalize();
 

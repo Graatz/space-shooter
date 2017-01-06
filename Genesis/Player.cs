@@ -18,10 +18,8 @@ namespace Genesis
         public Spawner Spawner { get; set; }
         public Weapon Weapon { get; set; }
         public ParticleEngine ParticleEngine { get; set; }
-
-        public double AttackSpeed { get; set; }
-        public float AngularVelocity { get; set; }
-        public float Acceleration { get; set; }
+        public Statistics Statistics { get; set; }
+        public PlayerUI UI { get; set; }
 
         public Player(Camera camera, Space space, ParticleEngine particleEngine, Vector2 position, float scale, float rotation, float velocity, Color color)
             : base(position, scale, rotation, velocity, Color.White)
@@ -29,14 +27,12 @@ namespace Genesis
             Camera = camera;
             ParticleEngine = particleEngine;
             Space = space;
-
-            Acceleration = 800;
-            AttackSpeed = 7;
-            AngularVelocity = 0.9f / Scale;
         }
 
         public void LoadContent(ContentManager Content)
         {
+            Statistics = new Statistics(7, 0.9f / Scale, 800, 100, 100);
+            UI = new PlayerUI(Statistics);
             Weapon = new Weapon(this, ParticleEngine.textures[1], 1300f, 0.07f);
             LoadTexture(Content.Load<Texture2D>("Textures/player"), Scale);
         }
@@ -56,12 +52,12 @@ namespace Genesis
             Direction = new Vector2((float)Math.Cos(Rotation), (float)Math.Sin(Rotation));
             if (Keyboard.GetState().IsKeyDown(Keys.D) || Keyboard.GetState().IsKeyDown(Keys.Right))
             {
-                Rotation += AngularVelocity * (float)gameTime.ElapsedGameTime.TotalSeconds;
+                Rotation += Statistics.AngularVelocity * (float)gameTime.ElapsedGameTime.TotalSeconds;
             }
 
             if (Keyboard.GetState().IsKeyDown(Keys.A) || Keyboard.GetState().IsKeyDown(Keys.Left))
             {
-                Rotation -= AngularVelocity * (float)gameTime.ElapsedGameTime.TotalSeconds;
+                Rotation -= Statistics.AngularVelocity * (float)gameTime.ElapsedGameTime.TotalSeconds;
             }
 
             if (Velocity > 0)
@@ -78,12 +74,12 @@ namespace Genesis
             if (Keyboard.GetState().IsKeyUp(Keys.W) && Keyboard.GetState().IsKeyUp(Keys.Up))
             {
                 if (Velocity > 0)
-                    Velocity -= Acceleration / 2 * (float)gameTime.ElapsedGameTime.TotalSeconds;
+                    Velocity -= Statistics.Acceleration / 2 * (float)gameTime.ElapsedGameTime.TotalSeconds;
             }
             else
             {
-                if (Velocity < Acceleration)
-                    Velocity += Acceleration * (float)gameTime.ElapsedGameTime.TotalSeconds;
+                if (Velocity < Statistics.Acceleration)
+                    Velocity += Statistics.Acceleration * (float)gameTime.ElapsedGameTime.TotalSeconds;
             }
         }
 

@@ -32,29 +32,33 @@ namespace Genesis
         {
             KeyboardState newState = Keyboard.GetState();
 
-            if (newState.IsKeyDown(Keys.S) && oldState.IsKeyUp(Keys.S))
+            if (newState.IsKeyDown(Keys.S) && Genesis.oldState.IsKeyUp(Keys.S))
             {
                 GoDown();
             }
-            else if (newState.IsKeyDown(Keys.W) && oldState.IsKeyUp(Keys.W))
+            else if (newState.IsKeyDown(Keys.W) && Genesis.oldState.IsKeyUp(Keys.W))
             {
                 GoUp();
             }
-            else if (newState.IsKeyDown(Keys.Space) && oldState.IsKeyUp(Keys.Space) && CurrentOptions.ActiveOption.Equals("Start game"))
+            else if (newState.IsKeyDown(Keys.Space) && Genesis.oldState.IsKeyUp(Keys.Space) && CurrentOptions.ActiveOption.Equals("Start game"))
             {
                 Genesis.Paused = false;
             }
-            else if (newState.IsKeyDown(Keys.Space) && oldState.IsKeyUp(Keys.Space) && CurrentOptions.ActiveOption.Equals("Options"))
+            else if (newState.IsKeyDown(Keys.Space) && Genesis.oldState.IsKeyUp(Keys.Space) && CurrentOptions.ActiveOption.Equals("Options"))
             {
                 Options options = new Options(GameState.GameStates, Graphics, Content);
                 CurrentOptions.ActiveOptionNumber = 0;
             }
-            else if (newState.IsKeyDown(Keys.Space) && oldState.IsKeyUp(Keys.Space) && CurrentOptions.ActiveOption.Equals("Exit"))
+            else if (newState.IsKeyDown(Keys.Space) && Genesis.oldState.IsKeyUp(Keys.Space) && CurrentOptions.ActiveOption.Equals("Exit"))
             {
                 game.Exit();
             }
+            else if (newState.IsKeyDown(Keys.Escape) && Genesis.oldState.IsKeyUp(Keys.Escape) && Genesis.Paused == true)
+            {
+                Genesis.Paused = false;
+            }
 
-            oldState = newState;
+            Genesis.oldState = newState;
         }
 
         public void GoDown()

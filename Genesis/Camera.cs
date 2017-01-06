@@ -59,7 +59,10 @@ namespace Genesis
 
         public bool InView(Rectangle object1)
         {
-            if (object1.Location.X + object1.Width >= Position.X && object1.Location.X - object1.Width <= Position.X + Genesis.Width && object1.Location.Y + object1.Height >= Position.Y && object1.Location.Y - object1.Height <= Position.Y + Genesis.Height)
+            if (object1.Location.X + object1.Width >= Position.X && 
+                object1.Location.X - object1.Width <= Position.X + Genesis.Width && 
+                object1.Location.Y + object1.Height >= Position.Y && 
+                object1.Location.Y - object1.Height <= Position.Y + Genesis.Height)
                 return true;
             else
                 return false;

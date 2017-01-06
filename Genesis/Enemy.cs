@@ -17,6 +17,7 @@ namespace Genesis
         public Vector2 Target { get; set; }
         public Vector2 InitialPosition { get; set; }
         public Camera Camera { get; set; }
+        public float TargetRotation { get; set; }
 
         public Enemy(Space space, Texture2D texture, Vector2 position, Camera camera, float rotation, float scale, float velocity, Vector2 direction, Vector2 target)
              : base (texture, position, scale, rotation, direction, velocity, Color.White)
@@ -26,6 +27,8 @@ namespace Genesis
             Camera = camera;
             Direction = direction;
             Target = target;
+
+            TargetRotation = (float)Math.Round(Math.Atan2(Target.Y - Position.Y, Target.X - Position.X), 1);
         }
 
         public void Update(GameTime gameTime)
@@ -40,7 +43,8 @@ namespace Genesis
                 {
                     InitialPosition = Position;
                     Target = new Vector2(Space.random.Next(0, Space.Width), Space.random.Next(0, Space.Height));
-                    Rotation = (float)Math.Atan2(Target.Y - Position.Y, Target.X - Position.X);
+                    TargetRotation = (float)Math.Round(Math.Atan2(Target.Y - Position.Y, Target.X - Position.X), 1);
+                    //Rotation = (float)Math.Round(Math.Atan2(Target.Y - Position.Y, Target.X - Position.X), 1);
                 }
             } else if (InitialPosition.X < Target.X)
             {
@@ -48,14 +52,20 @@ namespace Genesis
                 {
                     InitialPosition = Position;
                     Target = new Vector2(Space.random.Next(0, Space.Width), Space.random.Next(0, Space.Height));
-                    Rotation = (float)Math.Atan2(Target.Y - Position.Y, Target.X - Position.X);
+                    TargetRotation = (float)Math.Round(Math.Atan2(Target.Y - Position.Y, Target.X - Position.X), 1);
+                    //Rotation = (float)Math.Round(Math.Atan2(Target.Y - Position.Y, Target.X - Position.X), 1);
+                    //Debug.WriteLine(Rotation);
                 }
             }
 
-            /*if ((float)Math.Atan2(Target.Y - Position.Y, Target.X - Position.X) > Rotation)
+            if (TargetRotation > Math.Round(Rotation, 1))
             {
-                Rotation += 0.03f;
-            }*/
+                Rotation += 0.05f;
+            }
+            else if (TargetRotation < Math.Round(Rotation, 1))
+            {
+                Rotation -= 0.05f;
+            }
         }
 
         public void Draw(SpriteBatch spriteBatch, GraphicsDevice graphics)

@@ -51,8 +51,10 @@ namespace Genesis
                        if (camera.InView(new Rectangle((int)Player.Spawner.Enemies.ElementAt(j).Position.X, (int)Player.Spawner.Enemies.ElementAt(j).Position.Y,
                             Player.Spawner.Enemies.ElementAt(j).Width, Player.Spawner.Enemies.ElementAt(j).Height)))
                         {
-                            Rectangle bulletRectangle = new Rectangle((int)Bullets[i].Position.X, (int)Bullets[i].Position.Y, (int)(Bullets[i].Width), (int)(Bullets[i].Height));
-                            Rectangle enemyRectangle = new Rectangle((int)Player.Spawner.Enemies[j].Position.X, (int)Player.Spawner.Enemies[j].Position.Y, (int)Player.Spawner.Enemies[j].Width, (int)Player.Spawner.Enemies[j].Height);
+                            Rectangle bulletRectangle = new Rectangle((int)Bullets[i].Position.X, (int)Bullets[i].Position.Y, 
+                                                                      (int)(Bullets[i].Width), (int)(Bullets[i].Height));
+                            Rectangle enemyRectangle = new Rectangle((int)Player.Spawner.Enemies[j].Position.X, (int)Player.Spawner.Enemies[j].Position.Y, 
+                                                                     (int)Player.Spawner.Enemies[j].Width, (int)Player.Spawner.Enemies[j].Height);
                             if (bulletRectangle.Intersects(enemyRectangle))
                             {
                                 Player.ParticleEngine.GenerateParticles(70, Bullets[i].Position);
@@ -69,17 +71,23 @@ namespace Genesis
 
         public void Shoot(GameTime gameTime)
         {
-            Counter -= Player.AttackSpeed * gameTime.ElapsedGameTime.TotalSeconds;
-
-            if (Counter <= 0)
+            if (Player.Statistics.Energy > 1)
             {
-                if (Mouse.GetState().LeftButton == ButtonState.Pressed)
+
+                Counter -= Player.Statistics.AttackSpeed * gameTime.ElapsedGameTime.TotalSeconds;
+
+                if (Counter <= 0)
                 {
-                    Vector2 bulletPosition = new Vector2(Player.Position.X, Player.Position.Y);
-                    Bullets.Add(new Bullet(Player, Player.Space, BulletTexture, bulletPosition, BulletScale, Player.Rotation, new Vector2((float)Math.Cos(Player.Rotation), (float)Math.Sin(Player.Rotation)), BulletVelocity + Player.Velocity, Color.White));
-                    Counter = 1;
+                    if (Mouse.GetState().LeftButton == ButtonState.Pressed)
+                    {
+                        Vector2 bulletPosition = new Vector2(Player.Position.X, Player.Position.Y);
+                        Bullets.Add(new Bullet(Player, Player.Space, BulletTexture, bulletPosition, BulletScale, Player.Rotation, new Vector2((float)Math.Cos(Player.Rotation), (float)Math.Sin(Player.Rotation)), BulletVelocity + Player.Velocity, Color.White));
+                        Counter = 1;
+                        Player.Statistics.Energy = Player.Statistics.Energy - 1;
+                    }
                 }
             }
+
         }
 
         public void Draw(SpriteBatch spriteBatch, GraphicsDevice graphics)
