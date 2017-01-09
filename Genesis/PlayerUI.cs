@@ -38,26 +38,9 @@ namespace Genesis
             spriteBatch.End();
         }
 
-        private void DrawEnergy(SpriteBatch spriteBatch, GraphicsDevice graphics)
-        {
-            EnergyTexture = new Texture2D(graphics, (Statistics.Energy * 3), 15);
-
-            Color[] data = new Color[(Statistics.Energy * 3) * 15];
-
-            for (int i = 0; i < data.Length; ++i)
-                data[i] = Color.BlueViolet;
-
-            EnergyTexture.SetData(data);
-
-            spriteBatch.Begin();
-            spriteBatch.Draw(EnergyTexture, new Vector2(0, 15), Color.Azure);
-            spriteBatch.End();
-        }
-
         public void Draw(SpriteBatch spriteBatch, GraphicsDevice graphics)
         {
             DrawHealth(spriteBatch, graphics);
-            DrawEnergy(spriteBatch, graphics);
         }
     }
 }

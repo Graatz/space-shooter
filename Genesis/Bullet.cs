@@ -1,23 +1,19 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Genesis
 {
     class Bullet : GameObject
     {
-        public Player Player { get; set; }
+        public ISpaceShip SpaceShip { get; set; }
         public Space Space { get; set; }
         private int bulletPath;
 
-        public Bullet(Player player, Space space, Texture2D texture, Vector2 position, float scale, float rotation, Vector2 direction, float velocity, Color color)
+        public Bullet(ISpaceShip spaceShip, Space space, Texture2D texture, Vector2 position, float scale, float rotation, Vector2 direction, float velocity, Color color)
             : base (texture, position, scale, rotation, direction, velocity, color )
         {
-            Player = player;
+            SpaceShip = spaceShip;
             Space = space;
         }
 

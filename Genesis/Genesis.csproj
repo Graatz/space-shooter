@@ -63,6 +63,7 @@
     <Compile Include="Enemy.cs" />
     <Compile Include="GameObject.cs" />
     <Compile Include="GameState.cs" />
+    <Compile Include="ISpaceShip.cs" />
     <Compile Include="Menu.cs" />
     <Compile Include="Options.cs" />
     <Compile Include="PlayerUI.cs" />

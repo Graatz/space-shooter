@@ -12,26 +12,29 @@ namespace Genesis
 {
     class Weapon
     {
-        public Player Player { get; set; }
+        public ParticleEngine ParticleEngine { get; set; }
+        public Space Space { get; set; }
+        public ISpaceShip SpaceShip { get; set; }
         public List<Bullet> Bullets { get; set; }
         public Texture2D BulletTexture { get; set; }
         public float BulletVelocity { get; set; }
         public float BulletScale { get; set; }
         public double Counter { get; set; }
 
-        public Weapon(Player player, Texture2D bulletTexture, float bulletVelocity, float bulletScale)
+        public Weapon(ISpaceShip spaceShip, ParticleEngine particleEngine, Space space, Texture2D bulletTexture, float bulletVelocity, float bulletScale)
         {
+            SpaceShip = spaceShip;
+            ParticleEngine = particleEngine;
+            Space = space;
             BulletTexture = bulletTexture;
             BulletVelocity = bulletVelocity;
             BulletScale = bulletScale;
 
-            Player = player;
             Bullets = new List<Bullet>();
         }
 
         public void Update(GameTime gameTime, Camera camera)
         {
-            Shoot(gameTime);
             UpdateBullets(gameTime, camera);
         }
 
@@ -40,27 +43,37 @@ namespace Genesis
             for (int i = 0; i < Bullets.Count; i++)
             {
                 Bullets[i].Update(gameTime);
-                if (Bullets[i].Position.X < 0 || Bullets[i].Position.Y < 0 && Bullets[i].Position.X > Player.Space.Width && Bullets[i].Position.Y > Player.Space.Height)
+                if (Bullets[i].Position.X < 0 || Bullets[i].Position.Y < 0 && Bullets[i].Position.X > Space.Width && Bullets[i].Position.Y > Space.Height)
                 {
                     Bullets.RemoveAt(i);
                 }
                 else
                 {
-                    for (int j = 0; j < Player.Spawner.Enemies.Count; j++)
+                    for (int j = 0; j < SpaceShip.Enemies.Count; j++)
                     {
-                       if (camera.InView(new Rectangle((int)Player.Spawner.Enemies.ElementAt(j).Position.X, (int)Player.Spawner.Enemies.ElementAt(j).Position.Y,
-                            Player.Spawner.Enemies.ElementAt(j).Width, Player.Spawner.Enemies.ElementAt(j).Height)))
+                       if (camera.InView(new Rectangle((int)SpaceShip.Enemies.ElementAt(j).Position.X, (int)SpaceShip.Enemies.ElementAt(j).Position.Y,
+                            SpaceShip.Enemies.ElementAt(j).Width, SpaceShip.Enemies.ElementAt(j).Height)))
                         {
                             Rectangle bulletRectangle = new Rectangle((int)Bullets[i].Position.X, (int)Bullets[i].Position.Y, 
                                                                       (int)(Bullets[i].Width), (int)(Bullets[i].Height));
-                            Rectangle enemyRectangle = new Rectangle((int)Player.Spawner.Enemies[j].Position.X, (int)Player.Spawner.Enemies[j].Position.Y, 
-                                                                     (int)Player.Spawner.Enemies[j].Width, (int)Player.Spawner.Enemies[j].Height);
+                            Rectangle enemyRectangle = new Rectangle((int)SpaceShip.Enemies[j].Position.X, (int)SpaceShip.Enemies[j].Position.Y, 
+                                                                     (int)SpaceShip.Enemies[j].Width, (int)SpaceShip.Enemies[j].Height);
                             if (bulletRectangle.Intersects(enemyRectangle))
                             {
-                                Player.ParticleEngine.GenerateParticles(70, Bullets[i].Position);
+                                if (SpaceShip.Enemies.ElementAt(j).Statistics.Health > 10)
+                                    SpaceShip.Enemies.ElementAt(j).Statistics.Health -= 10;
+
+                                if (SpaceShip.Enemies.ElementAt(j).Statistics.Health == 10)
+                                {
+                                    SpaceShip.Enemies.RemoveAt(j);
+                                    ParticleEngine.GenerateParticles(80, Bullets[i].Position, BulletTexture);
+                                }
+                                else
+                                {
+                                    ParticleEngine.GenerateParticles(20, Bullets[i].Position, BulletTexture);
+                                }
+
                                 Bullets.RemoveAt(i);
-                                Player.Spawner.Enemies.RemoveAt(j);
-                                Player.Spawner.SpawnEnemies(1);
                                 break;
                             }
                         }
@@ -71,21 +84,13 @@ namespace Genesis
 
         public void Shoot(GameTime gameTime)
         {
-            if (Player.Statistics.Energy > 1)
+            Counter -= SpaceShip.Statistics.AttackSpeed * gameTime.ElapsedGameTime.TotalSeconds;
+
+            if (Counter <= 0)
             {
-
-                Counter -= Player.Statistics.AttackSpeed * gameTime.ElapsedGameTime.TotalSeconds;
-
-                if (Counter <= 0)
-                {
-                    if (Mouse.GetState().LeftButton == ButtonState.Pressed)
-                    {
-                        Vector2 bulletPosition = new Vector2(Player.Position.X, Player.Position.Y);
-                        Bullets.Add(new Bullet(Player, Player.Space, BulletTexture, bulletPosition, BulletScale, Player.Rotation, new Vector2((float)Math.Cos(Player.Rotation), (float)Math.Sin(Player.Rotation)), BulletVelocity + Player.Velocity, Color.White));
-                        Counter = 1;
-                        Player.Statistics.Energy = Player.Statistics.Energy - 1;
-                    }
-                }
+                Vector2 bulletPosition = new Vector2(SpaceShip.Position.X, SpaceShip.Position.Y);
+                Bullets.Add(new Bullet(SpaceShip, Space, BulletTexture, bulletPosition, BulletScale, SpaceShip.Rotation, new Vector2((float)Math.Cos(SpaceShip.Rotation), (float)Math.Sin(SpaceShip.Rotation)), BulletVelocity + SpaceShip.Velocity, Color.White));
+                Counter = 1;
             }
 
         }

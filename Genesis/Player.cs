@@ -11,8 +11,9 @@ using System.Threading.Tasks;
 
 namespace Genesis
 {
-    class Player : GameObject
+    class Player : GameObject, ISpaceShip
     {
+        public List<ISpaceShip> Enemies { get; set; }
         public Camera Camera { get; set; }
         public Space Space { get; set; }
         public Spawner Spawner { get; set; }
@@ -31,9 +32,9 @@ namespace Genesis
 
         public void LoadContent(ContentManager Content)
         {
-            Statistics = new Statistics(7, 0.9f / Scale, 800, 100, 100);
+            Statistics = new Statistics(7, 0.9f / Scale, 800, 100);
             UI = new PlayerUI(Statistics);
-            Weapon = new Weapon(this, ParticleEngine.textures[1], 1300f, 0.07f);
+            Weapon = new Weapon(this, ParticleEngine, Space, ParticleEngine.textures[1], 1300f, 0.07f);
             LoadTexture(Content.Load<Texture2D>("Textures/player"), Scale);
         }
 
@@ -50,6 +51,12 @@ namespace Genesis
         public void Move(GameTime gameTime)
         {
             Direction = new Vector2((float)Math.Cos(Rotation), (float)Math.Sin(Rotation));
+
+            if (Mouse.GetState().LeftButton == ButtonState.Pressed)
+            {
+                Weapon.Shoot(gameTime);
+            }
+
             if (Keyboard.GetState().IsKeyDown(Keys.D) || Keyboard.GetState().IsKeyDown(Keys.Right))
             {
                 Rotation += Statistics.AngularVelocity * (float)gameTime.ElapsedGameTime.TotalSeconds;

@@ -11,23 +11,38 @@ using System.Threading.Tasks;
 
 namespace Genesis
 {
-    class Enemy : GameObject
+    class Enemy : GameObject, ISpaceShip
     {
+        public ParticleEngine ParticleEngine { get; set; }
+        public Weapon Weapon { get; set; }
+        public List<ISpaceShip> Enemies { get; set; }
         public Space Space { get; set; }
         public Vector2 Target { get; set; }
         public Vector2 InitialPosition { get; set; }
         public Camera Camera { get; set; }
+        public Statistics Statistics { get; set; }
         public float TargetRotation { get; set; }
+        public Player Player { get; set; }
+        public bool aggro { get; set; }
 
-        public Enemy(Space space, Texture2D texture, Vector2 position, Camera camera, float rotation, float scale, float velocity, Vector2 direction, Vector2 target)
+        public Enemy(Player player, ParticleEngine particleEngine, Space space, Texture2D texture, Vector2 position, Camera camera, float rotation, float scale, float velocity, Vector2 direction, Vector2 target)
              : base (texture, position, scale, rotation, direction, velocity, Color.White)
         {
+            Player = player;
+            ParticleEngine = particleEngine;
             Space = space;
             InitialPosition = Position;
             Camera = camera;
             Direction = direction;
             Target = target;
 
+            Statistics = new Statistics(1, 0.9f / Scale, 800, 30);
+            Enemies = new List<ISpaceShip>();
+            Enemies.Add(Player);
+
+            Weapon = new Weapon(this, ParticleEngine, Space, ParticleEngine.textures[4], 1500f, 0.04f);
+
+            aggro = false;
             TargetRotation = (float)Math.Round(Math.Atan2(Target.Y - Position.Y, Target.X - Position.X), 1);
         }
 
@@ -37,35 +52,49 @@ namespace Genesis
             Direction.Normalize();
             Position = new Vector2(Position.X + Direction.X * (Velocity * (float)gameTime.ElapsedGameTime.TotalSeconds), Position.Y + Direction.Y * (Velocity * (float)gameTime.ElapsedGameTime.TotalSeconds));
 
-            if (InitialPosition.X > Target.X)
+            if (Camera.InView(new Rectangle((int)Position.X, (int)Position.Y, Width, Height)))
             {
-                if (Position.X <= Target.X)
+                Weapon.Shoot(gameTime);
+                aggro = true;
+            }
+            else
+                aggro = false;
+
+            if (aggro)
+            {
+                TargetRotation = (float)Math.Round(Math.Atan2(Player.Position.Y - Position.Y, Player.Position.X - Position.X), 1);
+            } else
+            {
+                if (InitialPosition.X > Target.X)
                 {
-                    InitialPosition = Position;
-                    Target = new Vector2(Space.random.Next(0, Space.Width), Space.random.Next(0, Space.Height));
-                    TargetRotation = (float)Math.Round(Math.Atan2(Target.Y - Position.Y, Target.X - Position.X), 1);
-                    //Rotation = (float)Math.Round(Math.Atan2(Target.Y - Position.Y, Target.X - Position.X), 1);
+                    if (Position.X <= Target.X)
+                    {
+                        InitialPosition = Position;
+                        Target = new Vector2(Space.random.Next(0, Space.Width), Space.random.Next(0, Space.Height));
+                        TargetRotation = (float)Math.Round(Math.Atan2(Target.Y - Position.Y, Target.X - Position.X), 1);
+                    }
                 }
-            } else if (InitialPosition.X < Target.X)
-            {
-                if (Position.X >= Target.X)
+                else if (InitialPosition.X < Target.X)
                 {
-                    InitialPosition = Position;
-                    Target = new Vector2(Space.random.Next(0, Space.Width), Space.random.Next(0, Space.Height));
-                    TargetRotation = (float)Math.Round(Math.Atan2(Target.Y - Position.Y, Target.X - Position.X), 1);
-                    //Rotation = (float)Math.Round(Math.Atan2(Target.Y - Position.Y, Target.X - Position.X), 1);
-                    //Debug.WriteLine(Rotation);
+                    if (Position.X >= Target.X)
+                    {
+                        InitialPosition = Position;
+                        Target = new Vector2(Space.random.Next(0, Space.Width), Space.random.Next(0, Space.Height));
+                        TargetRotation = (float)Math.Round(Math.Atan2(Target.Y - Position.Y, Target.X - Position.X), 1);
+                    }
                 }
             }
 
             if (TargetRotation > Math.Round(Rotation, 1))
             {
-                Rotation += 0.05f;
+                Rotation += 0.02f;
             }
             else if (TargetRotation < Math.Round(Rotation, 1))
             {
-                Rotation -= 0.05f;
+                Rotation -= 0.02f;
             }
+
+            Weapon.Update(gameTime, Camera);
         }
 
         public void Draw(SpriteBatch spriteBatch, GraphicsDevice graphics)

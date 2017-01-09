@@ -12,9 +12,10 @@ namespace Genesis
 {
     class Spawner
     {
+        public ParticleEngine ParticleEngine { get; set; }
         public Player Player { get; set; }
         public Space Space { get; set; }
-        public List<Enemy> Enemies { get; set; }
+        public List<ISpaceShip> Enemies { get; set; }
         public List<Asteroid> Asteroids { get; set; }
         public double Counter { get; set; }
         public Camera Camera { get; set; }
@@ -22,17 +23,20 @@ namespace Genesis
         private List<Texture2D> enemyTextures;
         private List<Texture2D> asteroidTextures;
 
-        public Spawner(Space space, Player player, Camera camera)
+        public Spawner(ParticleEngine particleEngine, Space space, Player player, Camera camera)
         {
+            ParticleEngine = particleEngine;
             Space = space;
             Player = player;
             Camera = camera;
-            Player.Spawner = this; 
+            Player.Spawner = this;
         }
 
         public void LoadContent(ContentManager Content)
         {
-            Enemies = new List<Enemy>();
+            Enemies = new List<ISpaceShip>();
+            Player.Enemies = Enemies;
+
             Asteroids = new List<Asteroid>();
 
             asteroidTextures = new List<Texture2D>();
@@ -75,14 +79,14 @@ namespace Genesis
         {
             Texture2D texture = enemyTextures[Space.random.Next(enemyTextures.Count)];
             float scale = 0.8f / (float)(Space.random.NextDouble() * (3.0 - 4.0) + 4.0);
-            Vector2 position = new Vector2(Space.random.Next(Space.Width + 300, Space.Width + 900), Space.random.Next(Space.Height + 300, Space.Height + 900));
-            float velocity = Space.random.Next(600, 600);
-            Vector2 target = new Vector2(Space.random.Next(300, Space.Width - 300), Space.random.Next(300, 700));
+            Vector2 position = new Vector2(Space.random.Next(-900, Space.Width + 900), Space.random.Next(-900, Space.Height + 900));
+            float velocity = Space.random.Next(200, 300);
+            Vector2 target = new Vector2(Space.random.Next(0, Space.Width), Space.random.Next(0, Space.Height));
             float rotation = (float)Math.Round(Math.Atan2(target.Y - position.Y, target.X - position.X), 1);
             Vector2 direction = new Vector2((float)Math.Cos(rotation), (float)Math.Sin(rotation));
             direction.Normalize();
 
-            Enemy enemy = new Enemy(Space, texture, position, Camera, rotation, scale, velocity, direction, target);
+            Enemy enemy = new Enemy(Player, ParticleEngine, Space, texture, position, Camera, rotation, scale, velocity, direction, target);
             Enemies.Add(enemy);
         }
 
@@ -130,6 +134,7 @@ namespace Genesis
 
             for (int i = 0; i < Enemies.Count; i++)
             {
+                Enemies[i].Weapon.Draw(spriteBatch, graphics);
                 if (Space.Camera.InView(new Rectangle((int)Enemies[i].Position.X, (int)Enemies[i].Position.Y, Enemies[i].Width, Enemies[i].Height)))
                     Enemies[i].Draw(spriteBatch, graphics);
             }

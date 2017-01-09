@@ -12,15 +12,13 @@ namespace Genesis
         public float AngularVelocity { get; set; }
         public float Acceleration { get; set; }
         public int Health { get; set; }
-        public int Energy { get; set; }
 
-        public Statistics(double attackSpeed, float angularVelocity, float acceleration, int health, int energy)
+        public Statistics(double attackSpeed, float angularVelocity, float acceleration, int health)
         {
             AttackSpeed = attackSpeed;
             AngularVelocity = angularVelocity;
             Acceleration = acceleration;
             Health = health;
-            Energy = energy;
         }
     }
 }
