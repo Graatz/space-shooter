@@ -13,7 +13,7 @@ namespace Genesis
 {
     class Enemy : GameObject, ISpaceShip
     {
-        public ParticleEngine ParticleEngine { get; set; }
+        public ParticleEffect ParticleEffect { get; set; }
         public Weapon Weapon { get; set; }
         public List<ISpaceShip> Enemies { get; set; }
         public Space Space { get; set; }
@@ -25,11 +25,11 @@ namespace Genesis
         public Player Player { get; set; }
         public bool aggro { get; set; }
 
-        public Enemy(Player player, ParticleEngine particleEngine, Space space, Texture2D texture, Vector2 position, Camera camera, float rotation, float scale, float velocity, Vector2 direction, Vector2 target)
+        public Enemy(Player player, ParticleEffect particleEffect, Space space, Texture2D texture, Vector2 position, Camera camera, float rotation, float scale, float velocity, Vector2 direction, Vector2 target)
              : base (texture, position, scale, rotation, direction, velocity, Color.White)
         {
             Player = player;
-            ParticleEngine = particleEngine;
+            ParticleEffect = particleEffect;
             Space = space;
             InitialPosition = Position;
             Camera = camera;
@@ -40,7 +40,7 @@ namespace Genesis
             Enemies = new List<ISpaceShip>();
             Enemies.Add(Player);
 
-            Weapon = new Weapon(this, ParticleEngine, Space, ParticleEngine.textures[4], 1500f, 0.04f);
+            Weapon = new Weapon(this, ParticleEffect, Space, ParticleEffect.textures[4], 1500f, 0.04f, 0);
 
             aggro = false;
             TargetRotation = (float)Math.Round(Math.Atan2(Target.Y - Position.Y, Target.X - Position.X), 1);

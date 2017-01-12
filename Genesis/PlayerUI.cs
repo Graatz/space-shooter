@@ -24,9 +24,9 @@ namespace Genesis
 
         private void DrawHealth(SpriteBatch spriteBatch, GraphicsDevice graphics)
         {
-            HealthTexture = new Texture2D(graphics, (Statistics.Health * 3), 15);
+            HealthTexture = new Texture2D(graphics, (Statistics.Health * 3), 10);
 
-            Color[] data = new Color[(Statistics.Health * 3) * 15];
+            Color[] data = new Color[(Statistics.Health * 3) * 10];
 
             for (int i = 0; i < data.Length; ++i)
                 data[i] = Color.Red;

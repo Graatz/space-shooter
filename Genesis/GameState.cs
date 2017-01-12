@@ -58,9 +58,9 @@ namespace Genesis
             Font = Content.Load<SpriteFont>("Fonts/Menu");
         }
 
-        public virtual void Update(GameTime gameTime, Game game)
+        public virtual void Update(GameTime gameTime, Game game, Genesis genesis)
         {
-            GameStates.Peek().Update(gameTime, game);
+            GameStates.Peek().Update(gameTime, game, genesis);
         }
 
         public virtual void Draw(SpriteBatch spriteBatch, GraphicsDevice graphicsDevice)

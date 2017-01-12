@@ -12,7 +12,7 @@ namespace Genesis
 {
     class Spawner
     {
-        public ParticleEngine ParticleEngine { get; set; }
+        public ParticleEffect ParticleEffect { get; set; }
         public Player Player { get; set; }
         public Space Space { get; set; }
         public List<ISpaceShip> Enemies { get; set; }
@@ -21,11 +21,11 @@ namespace Genesis
         public Camera Camera { get; set; }
 
         private List<Texture2D> enemyTextures;
-        private List<Texture2D> asteroidTextures;
+        public List<Texture2D> asteroidTextures;
 
-        public Spawner(ParticleEngine particleEngine, Space space, Player player, Camera camera)
+        public Spawner(ParticleEffect particleEffect, Space space, Player player, Camera camera)
         {
-            ParticleEngine = particleEngine;
+            ParticleEffect = particleEffect;
             Space = space;
             Player = player;
             Camera = camera;
@@ -69,7 +69,7 @@ namespace Genesis
 
         public void SpawnAsteroids(int number)
         {
-            for (int i = 0; i < number; i++)
+            for (int i = 0; i < number; ++i)
             {
                 SpawnAsteroid();
             }
@@ -86,13 +86,13 @@ namespace Genesis
             Vector2 direction = new Vector2((float)Math.Cos(rotation), (float)Math.Sin(rotation));
             direction.Normalize();
 
-            Enemy enemy = new Enemy(Player, ParticleEngine, Space, texture, position, Camera, rotation, scale, velocity, direction, target);
+            Enemy enemy = new Enemy(Player, ParticleEffect, Space, texture, position, Camera, rotation, scale, velocity, direction, target);
             Enemies.Add(enemy);
         }
 
         public void SpawnEnemies(int number)
         {
-            for (int i = 0; i < number; i++)
+            for (int i = 0; i < number; ++i)
             {
                 SpawnEnemy();
             }
@@ -104,16 +104,16 @@ namespace Genesis
 
             if (Counter <= 0)
             {
-                SpawnAsteroids(10);
+                SpawnAsteroids(50);
                 Counter = 1;
             }
 
-            for (int i = 0; i < Enemies.Count; i++)
+            for (int i = 0; i < Enemies.Count; ++i)
             {
                 Enemies[i].Update(gameTime);
             }
 
-            for (int i = 0; i < Asteroids.Count; i++)
+            for (int i = 0; i < Asteroids.Count; ++i)
             {
                 Asteroids[i].Update(gameTime);
 
@@ -126,13 +126,13 @@ namespace Genesis
 
         public void Draw(SpriteBatch spriteBatch, GraphicsDevice graphics)
         {
-            for (int i = 0; i < Asteroids.Count; i++)
+            for (int i = 0; i < Asteroids.Count; ++i)
             {
                 if (Space.Camera.InView(new Rectangle((int)Asteroids[i].Position.X, (int)Asteroids[i].Position.Y, Asteroids[i].Width, Asteroids[i].Height)))
                     Asteroids[i].Draw(spriteBatch, graphics);
             }
 
-            for (int i = 0; i < Enemies.Count; i++)
+            for (int i = 0; i < Enemies.Count; ++i)
             {
                 Enemies[i].Weapon.Draw(spriteBatch, graphics);
                 if (Space.Camera.InView(new Rectangle((int)Enemies[i].Position.X, (int)Enemies[i].Position.Y, Enemies[i].Width, Enemies[i].Height)))

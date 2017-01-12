@@ -12,25 +12,29 @@ namespace Genesis
 {
     class Weapon
     {
-        public ParticleEngine ParticleEngine { get; set; }
+        public ParticleEffect ParticleEffect { get; set; }
         public Space Space { get; set; }
         public ISpaceShip SpaceShip { get; set; }
         public List<Bullet> Bullets { get; set; }
         public Texture2D BulletTexture { get; set; }
         public float BulletVelocity { get; set; }
         public float BulletScale { get; set; }
+        public int Power { get; set; }
         public double Counter { get; set; }
+        Destruction Destruction { get; set; }
 
-        public Weapon(ISpaceShip spaceShip, ParticleEngine particleEngine, Space space, Texture2D bulletTexture, float bulletVelocity, float bulletScale)
+        public Weapon(ISpaceShip spaceShip, ParticleEffect particleEffect, Space space, Texture2D bulletTexture, float bulletVelocity, float bulletScale, int power)
         {
             SpaceShip = spaceShip;
-            ParticleEngine = particleEngine;
+            ParticleEffect = particleEffect;
             Space = space;
             BulletTexture = bulletTexture;
             BulletVelocity = bulletVelocity;
             BulletScale = bulletScale;
+            Power = power;
 
             Bullets = new List<Bullet>();
+            Destruction = new Destruction();
         }
 
         public void Update(GameTime gameTime, Camera camera)
@@ -40,7 +44,7 @@ namespace Genesis
 
         public void UpdateBullets(GameTime gameTime, Camera camera)
         {
-            for (int i = 0; i < Bullets.Count; i++)
+            for (int i = 0; i < Bullets.Count; ++i)
             {
                 Bullets[i].Update(gameTime);
                 if (Bullets[i].Position.X < 0 || Bullets[i].Position.Y < 0 && Bullets[i].Position.X > Space.Width && Bullets[i].Position.Y > Space.Height)
@@ -49,7 +53,7 @@ namespace Genesis
                 }
                 else
                 {
-                    for (int j = 0; j < SpaceShip.Enemies.Count; j++)
+                    for (int j = 0; j < SpaceShip.Enemies.Count; ++j)
                     {
                        if (camera.InView(new Rectangle((int)SpaceShip.Enemies.ElementAt(j).Position.X, (int)SpaceShip.Enemies.ElementAt(j).Position.Y,
                             SpaceShip.Enemies.ElementAt(j).Width, SpaceShip.Enemies.ElementAt(j).Height)))
@@ -61,16 +65,16 @@ namespace Genesis
                             if (bulletRectangle.Intersects(enemyRectangle))
                             {
                                 if (SpaceShip.Enemies.ElementAt(j).Statistics.Health > 10)
-                                    SpaceShip.Enemies.ElementAt(j).Statistics.Health -= 10;
+                                    SpaceShip.Enemies.ElementAt(j).Statistics.Health -= Power;
 
-                                if (SpaceShip.Enemies.ElementAt(j).Statistics.Health == 10)
+                                if (SpaceShip.Enemies.ElementAt(j).Statistics.Health <= 0)
                                 {
                                     SpaceShip.Enemies.RemoveAt(j);
-                                    ParticleEngine.GenerateParticles(80, Bullets[i].Position, BulletTexture);
+                                    ParticleEffect.GenerateParticles(150, Bullets[i].Position, BulletTexture);
                                 }
                                 else
                                 {
-                                    ParticleEngine.GenerateParticles(20, Bullets[i].Position, BulletTexture);
+                                    ParticleEffect.GenerateParticles(20, Bullets[i].Position, BulletTexture);
                                 }
 
                                 Bullets.RemoveAt(i);
@@ -97,9 +101,10 @@ namespace Genesis
 
         public void Draw(SpriteBatch spriteBatch, GraphicsDevice graphics)
         {
-            for (int i = 0; i < Bullets.Count; i++)
+            for (int i = 0; i < Bullets.Count; ++i)
             {
-                Bullets[i].Draw(spriteBatch, graphics);
+                if (Space.Camera.InView(new Rectangle((int)Bullets[i].Position.X, (int)Bullets[i].Position.Y, Bullets[i].Width, Bullets[i].Height)))
+                    Bullets[i].Draw(spriteBatch, graphics);
             }
         }
     }

@@ -40,7 +40,7 @@ namespace Genesis
                 spriteBatch.Draw(Texture, Position, null, Color, 0f, new Vector2(Texture.Width / 2, Texture.Height / 2), Scale, SpriteEffects.None, 0f);
                 spriteBatch.End();
 
-                for (int i = 0; i < 10; i++)
+                for (int i = 0; i < 10; ++i)
                 {
                     Vector2 direction = new Vector2((float)Math.Cos(Rotation),
                                     (float)Math.Sin(Rotation));

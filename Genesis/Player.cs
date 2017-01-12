@@ -18,23 +18,24 @@ namespace Genesis
         public Space Space { get; set; }
         public Spawner Spawner { get; set; }
         public Weapon Weapon { get; set; }
-        public ParticleEngine ParticleEngine { get; set; }
+        public ParticleEffect ParticleEffect { get; set; }
         public Statistics Statistics { get; set; }
         public PlayerUI UI { get; set; }
 
-        public Player(Camera camera, Space space, ParticleEngine particleEngine, Vector2 position, float scale, float rotation, float velocity, Color color)
+        public Player(Camera camera, Space space, ParticleEffect particleEffect, Vector2 position, float scale, float rotation, float velocity, Color color)
             : base(position, scale, rotation, velocity, Color.White)
         {
             Camera = camera;
-            ParticleEngine = particleEngine;
+            ParticleEffect = particleEffect;
             Space = space;
         }
 
         public void LoadContent(ContentManager Content)
         {
+            ParticleEffect.Destruction = new Destruction();
             Statistics = new Statistics(7, 0.9f / Scale, 800, 100);
             UI = new PlayerUI(Statistics);
-            Weapon = new Weapon(this, ParticleEngine, Space, ParticleEngine.textures[1], 1300f, 0.07f);
+            Weapon = new Weapon(this, ParticleEffect, Space, ParticleEffect.textures[1], 1300f, 0.07f, 100);
             LoadTexture(Content.Load<Texture2D>("Textures/player"), Scale);
         }
 
@@ -94,12 +95,23 @@ namespace Genesis
         {
             Move(gameTime);
             Weapon.Update(gameTime, Camera);
+            ParticleEffect.Destruction.Update(gameTime, Camera);
+
+            foreach(var asteroid in Spawner.Asteroids)
+            {
+                if (Intersects(new Rectangle((int)asteroid.Position.X, (int)asteroid.Position.Y, asteroid.Width, asteroid.Height)))
+                {
+                    ParticleEffect.Destruction.GenerateParticles((int)(asteroid.Scale * 30), asteroid.Position, asteroid.Texture);
+                    Spawner.Asteroids.Remove(asteroid);
+                    break;
+                }
+            }
         }
 
         public void Draw(SpriteBatch spriteBatch, GraphicsDevice graphics)
         {
             Weapon.Draw(spriteBatch, graphics);
-
+            ParticleEffect.Destruction.Draw(spriteBatch, graphics, Camera);
             Rectangle sourceRectangle = new Rectangle((int)Position.X, (int)Position.Y, Width, Height);
             spriteBatch.Begin(SpriteSortMode.Immediate, null, null, null, null, null, Space.Camera.getTransformation(graphics));
             spriteBatch.Draw(Texture, Position, null, new Color(150, 150, 150, 255), Rotation, new Vector2(Texture.Width/2, Texture.Height/2), Scale, SpriteEffects.None, 0f);

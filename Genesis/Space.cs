@@ -70,7 +70,7 @@ namespace Genesis
 
         public void GeneratePlanets()
         {
-            for (int i = 0; i < (Width + Height) / 1000; i++)
+            for (int i = 0; i < (Width + Height) / 1000; ++i)
             {
                 bool repeat;
                 do
@@ -89,7 +89,7 @@ namespace Genesis
 
                     if (numberOfPlanets >= 1)
                     {
-                        for (int j = 0; j < numberOfPlanets; j++)
+                        for (int j = 0; j < numberOfPlanets; ++j)
                         {
                             Rectangle object1 = new Rectangle((int)planet.Location.X, (int)planet.Location.Y, (int)planet.Width, (int)planet.Height);
                             Rectangle object2 = new Rectangle((int)Planets[j].Location.X, (int)Planets[j].Location.Y, (int)Planets[j].Width, (int)Planets[j].Height);
@@ -113,7 +113,7 @@ namespace Genesis
 
         public void GenerateNebulas()
         {
-            for (int i = 0; i < (Width + Height) / 5; i++)
+            for (int i = 0; i < (Width + Height) / 5; ++i)
             {
                 Texture2D nebulaTexture = Textures[1];
                 Vector2 nebulaLocation = new Vector2(random.Next(Width), random.Next(Height));
@@ -135,7 +135,7 @@ namespace Genesis
 
         public void GenerateStars()
         {
-            for (int i = 0; i < (Width + Height) / 0.7; i++)
+            for (int i = 0; i < (Width + Height) / 0.7; ++i)
             {
                 bool repeat;
                 do
@@ -150,7 +150,7 @@ namespace Genesis
 
                     if (numberOfPlanets >= 1)
                     {
-                        for (int j = 0; j < numberOfPlanets; j++)
+                        for (int j = 0; j < numberOfPlanets; ++j)
                         {
                             Rectangle object1 = new Rectangle((int)star.Location.X, (int)star.Location.Y, (int)star.Width, (int)star.Height);
                             Rectangle object2 = new Rectangle((int)Planets[j].Location.X, (int)Planets[j].Location.Y, (int)Planets[j].Width, (int)Planets[j].Height);
@@ -174,7 +174,7 @@ namespace Genesis
 
         public void Update(GameTime gameTime)
         {
-            for (int i = 0; i < Suns.Count; i++)
+            for (int i = 0; i < Suns.Count; ++i)
             {
                 Suns[i].Update(gameTime);
             }
@@ -184,22 +184,22 @@ namespace Genesis
         {
             spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, null, null, null, null, Camera.getTransformation(graphics));
 
-            for (int i = 0; i < Stars.Count; i++)
+            for (int i = 0; i < Stars.Count; ++i)
             {
                 Stars[i].Draw(spriteBatch);
             }
 
-            for (int i = 0; i < Nebulas.Count; i++)
+            for (int i = 0; i < Nebulas.Count; ++i)
             {
                 Nebulas[i].Draw(spriteBatch);
             }
 
-            for (int i = 0; i < Planets.Count; i++)
+            for (int i = 0; i < Planets.Count; ++i)
             {
                 Planets[i].Draw(spriteBatch);
             }
 
-            for (int i = 0; i < Suns.Count; i++)
+            for (int i = 0; i < Suns.Count; ++i)
             {
                 Suns[i].Draw(spriteBatch);
             }

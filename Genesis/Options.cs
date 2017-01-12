@@ -14,10 +14,10 @@ namespace Genesis
         {
             List<String> availableOptions = new List<String>()
             {
-                "Resolution",
-                "Fullscreen",
-                "Apply",
-                "Back"
+                "RESOLUTION",
+                "FULLSCREEN",
+                "APPLY",
+                "BACK"
             };
 
             CurrentOptions = new CurrentOptions(availableOptions);
@@ -29,11 +29,11 @@ namespace Genesis
                 new Resolution(1440, 900),
                 new Resolution(1600, 900),
                 new Resolution(1920, 1080),
-                new Resolution(2256, 1080)
+                new Resolution(2560, 1080)
             };
 
             Resolutions = new List<Resolution>();
-            for (int i = 0; i < availableResolutions.Count; i++)
+            for (int i = 0; i < availableResolutions.Count; ++i)
             {
                 if (availableResolutions[i].Width <= GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width && 
                     availableResolutions[i].Height <= GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height)
@@ -81,7 +81,7 @@ namespace Genesis
 
         public void DetectResolution()
         {
-            for (int i = 0; i < Resolutions.Count; i++)
+            for (int i = 0; i < Resolutions.Count; ++i)
             {
                 if (Resolutions[i].Width == Graphics.PreferredBackBufferWidth &&
                     Resolutions[i].Height == Graphics.PreferredBackBufferHeight)
@@ -91,7 +91,7 @@ namespace Genesis
             }
         }
 
-        public override void Update(GameTime gameTime, Game game)
+        public override void Update(GameTime gameTime, Game game, Genesis genesis)
         {
             KeyboardState newState = Keyboard.GetState();
 
@@ -168,7 +168,7 @@ namespace Genesis
             graphicsDevice.Clear(new Color(10, 10, 10, 255));
             spriteBatch.Begin();
 
-            for (int i = 0; i < CurrentOptions.AvailableOptions.Count; i++)
+            for (int i = 0; i < CurrentOptions.AvailableOptions.Count; ++i)
             {
                 String optionString = CurrentOptions.AvailableOptions[i];
                 if (i == 0)
@@ -184,9 +184,9 @@ namespace Genesis
                 }
 
                 if (CurrentOptions.ActiveOption.Equals(CurrentOptions.AvailableOptions[i]))
-                    spriteBatch.DrawString(Font, "> " + optionString, new Vector2(30, 30 + i * 50), HighlightColor, 0f, Vector2.Zero, 1, SpriteEffects.None, 0f);
+                    spriteBatch.DrawString(Font, optionString, new Vector2(Genesis.Width / 2 - 50, Genesis.Height / 2 + i * 50 - CurrentOptions.AvailableOptions.Count * 30), HighlightColor, 0f, Vector2.Zero, 1, SpriteEffects.None, 0f);
                 else 
-                    spriteBatch.DrawString(Font, optionString, new Vector2(30, 30 + i * 50), Color.White, 0f, Vector2.Zero, 1, SpriteEffects.None, 0f);
+                    spriteBatch.DrawString(Font, optionString, new Vector2(Genesis.Width / 2 - 50, Genesis.Height / 2 + i * 50 - CurrentOptions.AvailableOptions.Count * 30), Color.White, 0f, Vector2.Zero, 1, SpriteEffects.None, 0f);
             }
             spriteBatch.End();
         }

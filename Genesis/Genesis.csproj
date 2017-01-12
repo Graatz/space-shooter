@@ -60,6 +60,7 @@
     <Compile Include="Asteroid.cs" />
     <Compile Include="Bullet.cs" />
     <Compile Include="Camera.cs" />
+    <Compile Include="Destruction.cs" />
     <Compile Include="Enemy.cs" />
     <Compile Include="GameObject.cs" />
     <Compile Include="GameState.cs" />
@@ -70,7 +71,7 @@
     <Compile Include="Spawner.cs" />
     <Compile Include="Genesis.cs" />
     <Compile Include="Particle.cs" />
-    <Compile Include="ParticleEngine.cs" />
+    <Compile Include="ParticleEffect.cs" />
     <Compile Include="Planet.cs" />
     <Compile Include="Player.cs" />
     <Compile Include="Program.cs" />

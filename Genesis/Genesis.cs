@@ -19,7 +19,7 @@ namespace Genesis
         SpriteBatch spriteBatch;
         Player player;
         Spawner spawner;
-        ParticleEngine particleEngine;
+        ParticleEffect ParticleEffect;
         Space space;
         Texture2D cursor;
         Camera camera;
@@ -53,27 +53,25 @@ namespace Genesis
 
             cursor = Content.Load<Texture2D>("Textures/cursor");
             spriteBatch = new SpriteBatch(GraphicsDevice);
+        }
 
-            particleEngine = new ParticleEngine();
-            particleEngine.LoadContent(Content);
+        public void StartNewGame()
+        {
+            ParticleEffect = new ParticleEffect();
+            ParticleEffect.LoadContent(Content);
 
             camera = new Camera();
 
             space = new Space(camera, 20000, 15000);
             space.LoadContent(Content, GraphicsDevice);
-            camera.SetCameraPosition(new Vector2(space.Width/2 - Width/2, space.Height / 2 - Height / 2));
+            camera.SetCameraPosition(new Vector2(space.Width / 2 - Width / 2, space.Height / 2 - Height / 2));
 
-            player = new Player(camera, space, particleEngine, new Vector2(space.Width/2, space.Height/2), 0.3f, 0f, 0f, Color.White);
+            player = new Player(camera, space, ParticleEffect, new Vector2(space.Width / 2, space.Height / 2), 0.3f, 0f, 0f, Color.White);
             player.LoadContent(Content);
 
-            spawner = new Spawner(particleEngine, space, player, camera);
+            spawner = new Spawner(ParticleEffect, space, player, camera);
             spawner.LoadContent(Content);
-            spawner.SpawnEnemies(30);
-        }
-
-        public static void StartNewGame()
-        {
-
+            spawner.SpawnEnemies(50);
         }
 
         protected override void UnloadContent()
@@ -86,7 +84,7 @@ namespace Genesis
             KeyboardState newState = Keyboard.GetState();
             if (Paused)
             {
-                gameState.Update(gameTime, this);
+                gameState.Update(gameTime, this, this);
             }
             else
             {
@@ -94,11 +92,11 @@ namespace Genesis
                     Paused = true;
 
                 if (Mouse.GetState().RightButton == ButtonState.Pressed)
-                    particleEngine.GenerateParticles(50, new Vector2(Mouse.GetState().Position.X + camera.Position.X, Mouse.GetState().Position.Y + camera.Position.Y), particleEngine.textures[0]);
+                    ParticleEffect.GenerateParticles(50, new Vector2(Mouse.GetState().Position.X + camera.Position.X, Mouse.GetState().Position.Y + camera.Position.Y), ParticleEffect.textures[0]);
 
                 player.Update(gameTime);
                 spawner.Update(gameTime);
-                particleEngine.Update(gameTime);
+                ParticleEffect.Update(gameTime);
                 space.Update(gameTime);
             }
             Genesis.oldState = newState;
@@ -115,7 +113,7 @@ namespace Genesis
                 space.Draw(spriteBatch, GraphicsDevice);
                 player.Draw(spriteBatch, GraphicsDevice);
                 spawner.Draw(spriteBatch, GraphicsDevice);
-                particleEngine.Draw(spriteBatch, GraphicsDevice, camera);
+                ParticleEffect.Draw(spriteBatch, GraphicsDevice, camera);
                 player.UI.Draw(spriteBatch, GraphicsDevice);
 
                 /*spriteBatch.Begin();

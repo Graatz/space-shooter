@@ -19,20 +19,9 @@ namespace Genesis
             Transparency = 255;
         }
 
-        public void Update(GameTime gameTime)
-        {
-            Transparency -= 5;
-            Color = new Color(255, 255, 255, Transparency);
-            Position += Direction * (Velocity * (float)gameTime.ElapsedGameTime.TotalSeconds);
-            Scale -= 0.5f * (float)gameTime.ElapsedGameTime.TotalSeconds;
-            Velocity /= 1.2f;
-        }
-
         public void Draw(SpriteBatch spriteBatch, GraphicsDevice graphics, Camera camera)
-        {
-            spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, null, null, null, null, camera.getTransformation(graphics));
+        {          
             spriteBatch.Draw(Texture, Position, null, Color, Rotation, Origin, Scale, SpriteEffects.None, 0f);
-            spriteBatch.End();
         }
     }
 }
