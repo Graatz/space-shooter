@@ -4,10 +4,6 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Genesis
 {
@@ -20,7 +16,6 @@ namespace Genesis
         public Weapon Weapon { get; set; }
         public ParticleEffect ParticleEffect { get; set; }
         public Statistics Statistics { get; set; }
-        public PlayerUI UI { get; set; }
 
         public Player(Camera camera, Space space, ParticleEffect particleEffect, Vector2 position, float scale, float rotation, float velocity, Color color)
             : base(position, scale, rotation, velocity, Color.White)
@@ -34,7 +29,6 @@ namespace Genesis
         {
             ParticleEffect.Destruction = new Destruction();
             Statistics = new Statistics(7, 0.9f / Scale, 800, 100);
-            UI = new PlayerUI(Statistics);
             Weapon = new Weapon(this, ParticleEffect, Space, ParticleEffect.textures[1], 1300f, 0.07f, 100);
             LoadTexture(Content.Load<Texture2D>("Textures/player"), Scale);
         }

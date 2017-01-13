@@ -66,8 +66,8 @@
     <Compile Include="GameState.cs" />
     <Compile Include="ISpaceShip.cs" />
     <Compile Include="Menu.cs" />
+    <Compile Include="PlanetModel.cs" />
     <Compile Include="Options.cs" />
-    <Compile Include="PlayerUI.cs" />
     <Compile Include="Spawner.cs" />
     <Compile Include="Genesis.cs" />
     <Compile Include="Particle.cs" />

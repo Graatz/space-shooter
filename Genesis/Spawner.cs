@@ -3,25 +3,23 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Genesis
 {
     class Spawner
     {
+        public Camera Camera { get; set; }
         public ParticleEffect ParticleEffect { get; set; }
         public Player Player { get; set; }
         public Space Space { get; set; }
-        public List<ISpaceShip> Enemies { get; set; }
-        public List<Asteroid> Asteroids { get; set; }
-        public double Counter { get; set; }
-        public Camera Camera { get; set; }
 
+        public List<ISpaceShip> Enemies { get; set; }
         private List<Texture2D> enemyTextures;
+
+        public List<Asteroid> Asteroids { get; set; }
         public List<Texture2D> asteroidTextures;
+
+        public double Counter { get; set; }
 
         public Spawner(ParticleEffect particleEffect, Space space, Player player, Camera camera)
         {

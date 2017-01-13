@@ -12,16 +12,18 @@ namespace Genesis
 {
     class Weapon
     {
-        public ParticleEffect ParticleEffect { get; set; }
-        public Space Space { get; set; }
         public ISpaceShip SpaceShip { get; set; }
+        public Space Space { get; set; }
+
+        public ParticleEffect ParticleEffect { get; set; }
+
         public List<Bullet> Bullets { get; set; }
         public Texture2D BulletTexture { get; set; }
         public float BulletVelocity { get; set; }
         public float BulletScale { get; set; }
+
         public int Power { get; set; }
-        public double Counter { get; set; }
-        Destruction Destruction { get; set; }
+        public double Delay { get; set; }
 
         public Weapon(ISpaceShip spaceShip, ParticleEffect particleEffect, Space space, Texture2D bulletTexture, float bulletVelocity, float bulletScale, int power)
         {
@@ -34,7 +36,6 @@ namespace Genesis
             Power = power;
 
             Bullets = new List<Bullet>();
-            Destruction = new Destruction();
         }
 
         public void Update(GameTime gameTime, Camera camera)
@@ -88,13 +89,13 @@ namespace Genesis
 
         public void Shoot(GameTime gameTime)
         {
-            Counter -= SpaceShip.Statistics.AttackSpeed * gameTime.ElapsedGameTime.TotalSeconds;
+            Delay -= SpaceShip.Statistics.AttackSpeed * gameTime.ElapsedGameTime.TotalSeconds;
 
-            if (Counter <= 0)
+            if (Delay <= 0)
             {
                 Vector2 bulletPosition = new Vector2(SpaceShip.Position.X, SpaceShip.Position.Y);
                 Bullets.Add(new Bullet(SpaceShip, Space, BulletTexture, bulletPosition, BulletScale, SpaceShip.Rotation, new Vector2((float)Math.Cos(SpaceShip.Rotation), (float)Math.Sin(SpaceShip.Rotation)), BulletVelocity + SpaceShip.Velocity, Color.White));
-                Counter = 1;
+                Delay = 1;
             }
 
         }

@@ -3,7 +3,6 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 
 namespace Genesis
 {
@@ -13,7 +12,6 @@ namespace Genesis
         public static int Width = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
         public static int Height = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
         public static bool Paused = true;
-        public static Random random;
 
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
@@ -21,13 +19,11 @@ namespace Genesis
         Spawner spawner;
         ParticleEffect ParticleEffect;
         Space space;
-        Texture2D cursor;
         Camera camera;
         GameState gameState;
 
         public Genesis()
         {
-            random = new Random();
             graphics = new GraphicsDeviceManager(this);
             graphics.PreferredBackBufferWidth = Width;
             graphics.PreferredBackBufferHeight = Height;
@@ -48,10 +44,9 @@ namespace Genesis
         protected override void LoadContent()
         {
             GameState.GameStates = new Stack<GameState>();
-            gameState = new GameState(new Stack<GameState>(), graphics, Content);
+            gameState = new GameState(GameState.GameStates, graphics, Content);
             GameState.GameStates.Push(new Menu(GameState.GameStates, graphics, Content));
 
-            cursor = Content.Load<Texture2D>("Textures/cursor");
             spriteBatch = new SpriteBatch(GraphicsDevice);
         }
 
@@ -114,11 +109,6 @@ namespace Genesis
                 player.Draw(spriteBatch, GraphicsDevice);
                 spawner.Draw(spriteBatch, GraphicsDevice);
                 ParticleEffect.Draw(spriteBatch, GraphicsDevice, camera);
-                player.UI.Draw(spriteBatch, GraphicsDevice);
-
-                /*spriteBatch.Begin();
-                spriteBatch.Draw(cursor, new Rectangle(Mouse.GetState().Position - new Point(5, 5), new Point(cursor.Width, cursor.Height)), Color.White);
-                spriteBatch.End();*/
             }
             base.Draw(gameTime);
         }
