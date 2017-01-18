@@ -27,7 +27,7 @@ namespace Genesis
             graphics = new GraphicsDeviceManager(this);
             graphics.PreferredBackBufferWidth = Width;
             graphics.PreferredBackBufferHeight = Height;
-            graphics.IsFullScreen = false;
+            graphics.IsFullScreen = true;
             graphics.SynchronizeWithVerticalRetrace = true;
             graphics.ApplyChanges();
 
@@ -61,7 +61,7 @@ namespace Genesis
             space.LoadContent(Content, GraphicsDevice);
             camera.SetCameraPosition(new Vector2(space.Width / 2 - Width / 2, space.Height / 2 - Height / 2));
 
-            player = new Player(camera, space, ParticleEffect, new Vector2(space.Width / 2, space.Height / 2), 0.3f, 0f, 0f, Color.White);
+            player = new Player(space, ParticleEffect, new Vector2(space.Width / 2, space.Height / 2), 0.3f, 0f, 0f, Color.White);
             player.LoadContent(Content);
 
             spawner = new Spawner(ParticleEffect, space, player, camera);
@@ -86,12 +86,13 @@ namespace Genesis
                 if (newState.IsKeyDown(Keys.Escape) && Genesis.oldState.IsKeyUp(Keys.Escape) && Genesis.Paused == false)
                     Paused = true;
 
-                if (Mouse.GetState().RightButton == ButtonState.Pressed)
-                    ParticleEffect.GenerateParticles(50, new Vector2(Mouse.GetState().Position.X + camera.Position.X, Mouse.GetState().Position.Y + camera.Position.Y), ParticleEffect.textures[0]);
+                //if (Mouse.GetState().RightButton == ButtonState.Pressed)
+                    //ParticleEffect.GenerateParticles(50, new Vector2(Mouse.GetState().Position.X + camera.Position.X, Mouse.GetState().Position.Y + camera.Position.Y), ParticleEffect.textures[0]);
 
                 player.Update(gameTime);
                 spawner.Update(gameTime);
                 ParticleEffect.Update(gameTime);
+                ParticleEffect.Update(gameTime, camera);
                 space.Update(gameTime);
             }
             Genesis.oldState = newState;

@@ -14,6 +14,7 @@ namespace Genesis
         public List<Texture2D> textures;
         public Destruction Destruction;
 
+
         public void LoadContent(ContentManager Content)
         {
             particles = new List<Particle>();
@@ -67,7 +68,7 @@ namespace Genesis
 
         public virtual void Update(GameTime gameTime, Camera camera)
         {
-
+            Destruction.Update(gameTime, camera);
         }
 
         public virtual void Draw(SpriteBatch spriteBatch, GraphicsDevice graphics, Camera camera)

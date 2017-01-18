@@ -18,6 +18,7 @@ namespace Genesis
         public List<Texture2D> Objects { get; set; }
         public PlanetModel PlanetModel { get; set; }
         public Camera Camera { get; set; }
+        public Spawner Spawner { get; set; }
         public Random random;
         public float vortexRotation = 0;
 

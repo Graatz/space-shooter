@@ -27,7 +27,7 @@ namespace Genesis
             Space = space;
             Player = player;
             Camera = camera;
-            Player.Spawner = this;
+            Space.Spawner = this;
         }
 
         public void LoadContent(ContentManager Content)

@@ -10,17 +10,14 @@ namespace Genesis
     class Player : GameObject, ISpaceShip
     {
         public List<ISpaceShip> Enemies { get; set; }
-        public Camera Camera { get; set; }
         public Space Space { get; set; }
-        public Spawner Spawner { get; set; }
         public Weapon Weapon { get; set; }
         public ParticleEffect ParticleEffect { get; set; }
         public Statistics Statistics { get; set; }
 
-        public Player(Camera camera, Space space, ParticleEffect particleEffect, Vector2 position, float scale, float rotation, float velocity, Color color)
+        public Player(Space space, ParticleEffect particleEffect, Vector2 position, float scale, float rotation, float velocity, Color color)
             : base(position, scale, rotation, velocity, Color.White)
         {
-            Camera = camera;
             ParticleEffect = particleEffect;
             Space = space;
         }
@@ -70,7 +67,7 @@ namespace Genesis
                 Vector2 newPosition = new Vector2(Position.X+direction.X*(Velocity * (float)gameTime.ElapsedGameTime.TotalSeconds), Position.Y+direction.Y*(Velocity * (float)gameTime.ElapsedGameTime.TotalSeconds));
                 Position = newPosition;
 
-                Camera.MoveCamera(direction * (Velocity * (float)gameTime.ElapsedGameTime.TotalSeconds));
+                Space.Camera.MoveCamera(direction * (Velocity * (float)gameTime.ElapsedGameTime.TotalSeconds));
             }
 
             if (Keyboard.GetState().IsKeyUp(Keys.W) && Keyboard.GetState().IsKeyUp(Keys.Up))
@@ -88,15 +85,14 @@ namespace Genesis
         public void Update(GameTime gameTime)
         {
             Move(gameTime);
-            Weapon.Update(gameTime, Camera);
-            ParticleEffect.Destruction.Update(gameTime, Camera);
+            Weapon.Update(gameTime, Space.Camera);
 
-            foreach(var asteroid in Spawner.Asteroids)
+            foreach(var asteroid in Space.Spawner.Asteroids)
             {
                 if (Intersects(new Rectangle((int)asteroid.Position.X, (int)asteroid.Position.Y, asteroid.Width, asteroid.Height)))
                 {
                     ParticleEffect.Destruction.GenerateParticles((int)(asteroid.Scale * 30), asteroid.Position, asteroid.Texture);
-                    Spawner.Asteroids.Remove(asteroid);
+                    Space.Spawner.Asteroids.Remove(asteroid);
                     break;
                 }
             }
@@ -105,7 +101,7 @@ namespace Genesis
         public void Draw(SpriteBatch spriteBatch, GraphicsDevice graphics)
         {
             Weapon.Draw(spriteBatch, graphics);
-            ParticleEffect.Destruction.Draw(spriteBatch, graphics, Camera);
+            ParticleEffect.Destruction.Draw(spriteBatch, graphics, Space.Camera);
             Rectangle sourceRectangle = new Rectangle((int)Position.X, (int)Position.Y, Width, Height);
             spriteBatch.Begin(SpriteSortMode.Immediate, null, null, null, null, null, Space.Camera.getTransformation(graphics));
             spriteBatch.Draw(Texture, Position, null, new Color(150, 150, 150, 255), Rotation, new Vector2(Texture.Width/2, Texture.Height/2), Scale, SpriteEffects.None, 0f);
