@@ -10,7 +10,8 @@ If you'd like to try playing my game, you can find the release version right [HE
 A, D - flight direction<br />
 W - acceleration<br />
 Left mouse - shooting<br />
-ESC - exit the game
+ESC - open menu
+W, S, A, D, Space - menu navigation
 
 # Screenshots:
 
