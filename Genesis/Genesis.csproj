@@ -66,12 +66,13 @@
     <Compile Include="GameState.cs" />
     <Compile Include="ISpaceShip.cs" />
     <Compile Include="Menu.cs" />
+    <Compile Include="ParticleHandler.cs" />
     <Compile Include="PlanetModel.cs" />
     <Compile Include="Options.cs" />
+    <Compile Include="SmokeEffect.cs" />
     <Compile Include="Spawner.cs" />
     <Compile Include="Genesis.cs" />
     <Compile Include="Particle.cs" />
-    <Compile Include="ParticleEffect.cs" />
     <Compile Include="Planet.cs" />
     <Compile Include="Player.cs" />
     <Compile Include="Program.cs" />

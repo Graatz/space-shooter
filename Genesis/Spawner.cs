@@ -9,7 +9,7 @@ namespace Genesis
     class Spawner
     {
         public Camera Camera { get; set; }
-        public ParticleEffect ParticleEffect { get; set; }
+        public ParticleHandler ParticleHandler { get; set; }
         public Player Player { get; set; }
         public Space Space { get; set; }
 
@@ -21,9 +21,9 @@ namespace Genesis
 
         public double Counter { get; set; }
 
-        public Spawner(ParticleEffect particleEffect, Space space, Player player, Camera camera)
+        public Spawner(ParticleHandler particleHandler, Space space, Player player, Camera camera)
         {
-            ParticleEffect = particleEffect;
+            ParticleHandler = particleHandler;
             Space = space;
             Player = player;
             Camera = camera;
@@ -84,7 +84,7 @@ namespace Genesis
             Vector2 direction = new Vector2((float)Math.Cos(rotation), (float)Math.Sin(rotation));
             direction.Normalize();
 
-            Enemy enemy = new Enemy(Player, ParticleEffect, Space, texture, position, Camera, rotation, scale, velocity, direction, target);
+            Enemy enemy = new Enemy(Player, ParticleHandler, Space, texture, position, Camera, rotation, scale, velocity, direction, target);
             Enemies.Add(enemy);
         }
 

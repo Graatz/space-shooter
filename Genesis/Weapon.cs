@@ -15,7 +15,7 @@ namespace Genesis
         public ISpaceShip SpaceShip { get; set; }
         public Space Space { get; set; }
 
-        public ParticleEffect ParticleEffect { get; set; }
+        public ParticleHandler ParticleHandler { get; set; }
 
         public List<Bullet> Bullets { get; set; }
         public Texture2D BulletTexture { get; set; }
@@ -25,10 +25,10 @@ namespace Genesis
         public int Power { get; set; }
         public double Delay { get; set; }
 
-        public Weapon(ISpaceShip spaceShip, ParticleEffect particleEffect, Space space, Texture2D bulletTexture, float bulletVelocity, float bulletScale, int power)
+        public Weapon(ISpaceShip spaceShip, ParticleHandler particleHandler, Space space, Texture2D bulletTexture, float bulletVelocity, float bulletScale, int power)
         {
             SpaceShip = spaceShip;
-            ParticleEffect = particleEffect;
+            ParticleHandler = particleHandler;
             Space = space;
             BulletTexture = bulletTexture;
             BulletVelocity = bulletVelocity;
@@ -71,11 +71,11 @@ namespace Genesis
                                 if (SpaceShip.Enemies.ElementAt(j).Statistics.Health <= 0)
                                 {
                                     SpaceShip.Enemies.RemoveAt(j);
-                                    ParticleEffect.GenerateParticles(150, Bullets[i].Position, BulletTexture);
+                                    ParticleHandler.Destruction.GenerateParticles(150, Bullets[i].Position, BulletTexture);
                                 }
                                 else
                                 {
-                                    ParticleEffect.GenerateParticles(20, Bullets[i].Position, BulletTexture);
+                                    ParticleHandler.Destruction.GenerateParticles(20, Bullets[i].Position, BulletTexture);
                                 }
 
                                 Bullets.RemoveAt(i);

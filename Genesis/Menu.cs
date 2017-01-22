@@ -56,7 +56,7 @@ namespace Genesis
             }
             else if (newState.IsKeyDown(Keys.Escape) && Genesis.oldState.IsKeyUp(Keys.Escape) && Genesis.Paused == true)
             {
-                Genesis.Paused = false;
+                game.Exit();
             }
 
             Genesis.oldState = newState;

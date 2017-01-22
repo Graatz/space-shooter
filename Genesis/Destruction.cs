@@ -6,7 +6,7 @@ using System.Collections.Generic;
 
 namespace Genesis
 {
-    class Destruction : ParticleEffect
+    class Destruction
     {
         private Random random;
         private Vector2 emitterLocation;
@@ -16,10 +16,9 @@ namespace Genesis
         {
             particles = new List<Particle>();
             random = new Random();
-            textures = new List<Texture2D>();
         }
 
-        public override Particle GenerateParticle(Texture2D texture)
+        private Particle GenerateParticle(Texture2D texture)
         {
             float scale = 0.3f;
             Vector2 position = emitterLocation;
@@ -31,7 +30,7 @@ namespace Genesis
             return new Particle(texture, emitterLocation, scale, 0f, direction, velocity, color);
         }
 
-        public override void GenerateParticles(int number, Vector2 location, Texture2D texture)
+        public void GenerateParticles(int number, Vector2 location, Texture2D texture)
         {
             emitterLocation = location;
             for (int i = 0; i < number; ++i)
@@ -40,7 +39,7 @@ namespace Genesis
             }
         }
 
-        public override void Update(GameTime gameTime, Camera camera)
+        public void Update(GameTime gameTime, Camera camera)
         {
             for (int i = 0; i < particles.Count; ++i)
             {
@@ -54,7 +53,7 @@ namespace Genesis
             }
         }
 
-        public override void Draw(SpriteBatch spriteBatch, GraphicsDevice graphics, Camera camera)
+        public void Draw(SpriteBatch spriteBatch, GraphicsDevice graphics, Camera camera)
         {
             for (int i = 0; i < particles.Count; ++i)
             {
