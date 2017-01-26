@@ -12,12 +12,14 @@ namespace Genesis
         public List<Texture2D> AsteroidTextures;
         public Destruction Destruction;
         public SmokeEffect SmokeEffect;
+        public FadeEffect FadeEffect;
 
 
         public void LoadContent(ContentManager Content)
         {
             Destruction = new Destruction();
             SmokeEffect = new SmokeEffect();
+            FadeEffect = new FadeEffect(Content.Load<Texture2D>("Textures/black"));
 
             ColorTextures = new Dictionary<String, Texture2D>();
             AsteroidTextures = new List<Texture2D>();
@@ -38,6 +40,7 @@ namespace Genesis
         {
             Destruction.Update(gameTime, camera);
             SmokeEffect.Update(gameTime, camera);
+            FadeEffect.Update();
         }
     }
 }

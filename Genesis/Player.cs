@@ -40,7 +40,7 @@ namespace Genesis
 
         }
 
-        public void Move(GameTime gameTime)
+        public void Move(GameTime gameTime, Camera camera)
         {
             Direction = new Vector2((float)Math.Cos(Rotation), (float)Math.Sin(Rotation));
 
@@ -67,7 +67,7 @@ namespace Genesis
                 Vector2 newPosition = new Vector2(Position.X+direction.X*(Velocity * (float)gameTime.ElapsedGameTime.TotalSeconds), Position.Y+direction.Y*(Velocity * (float)gameTime.ElapsedGameTime.TotalSeconds));
                 Position = newPosition;
 
-                Space.Camera.MoveCamera(direction * (Velocity * (float)gameTime.ElapsedGameTime.TotalSeconds));
+                camera.MoveCamera(direction * (Velocity * (float)gameTime.ElapsedGameTime.TotalSeconds));
             }
 
             if (Keyboard.GetState().IsKeyUp(Keys.W) && Keyboard.GetState().IsKeyUp(Keys.Up))
@@ -89,10 +89,10 @@ namespace Genesis
             }
         }
 
-        public void Update(GameTime gameTime)
+        public void Update(GameTime gameTime, Camera camera)
         {
-            Move(gameTime);
-            Weapon.Update(gameTime, Space.Camera);
+            Move(gameTime, camera);
+            Weapon.Update(gameTime, camera);
 
             foreach(var asteroid in Space.Spawner.Asteroids)
             {
@@ -103,13 +103,28 @@ namespace Genesis
                     break;
                 }
             }
+
+            float TargetRotation;
+            foreach (var vortex in Space.Vortexes)
+            {
+                TargetRotation = (float)Math.Round(Math.Atan2(vortex.Position.Y + vortex.Origin.Y - Position.Y, vortex.Position.X + vortex.Origin.X - Position.X), 1);
+                if (Intersects(new Rectangle((int)vortex.Position.X - vortex.Width / 2, (int)vortex.Position.Y - vortex.Height / 2, vortex.Width, vortex.Height)))
+                {
+                    if (Velocity <= 100)
+                        Velocity = 100;
+                    if (Rotation >= TargetRotation)
+                        Rotation -= Statistics.AngularVelocity / 2 * (float)gameTime.ElapsedGameTime.TotalSeconds;
+                    else
+                        Rotation += Statistics.AngularVelocity / 2 * (float)gameTime.ElapsedGameTime.TotalSeconds;
+                }
+            }
         }
 
-        public void Draw(SpriteBatch spriteBatch, GraphicsDevice graphics)
+        public void Draw(SpriteBatch spriteBatch, GraphicsDevice graphics, Camera camera)
         {
-            Weapon.Draw(spriteBatch, graphics);
+            Weapon.Draw(spriteBatch, graphics, camera);
             Rectangle sourceRectangle = new Rectangle((int)Position.X, (int)Position.Y, Width, Height);
-            spriteBatch.Begin(SpriteSortMode.Immediate, null, null, null, null, null, Space.Camera.getTransformation(graphics));
+            spriteBatch.Begin(SpriteSortMode.Immediate, null, null, null, null, null, camera.getTransformation(graphics));
             spriteBatch.Draw(Texture, Position, null, new Color(150, 150, 150, 255), Rotation, new Vector2(Texture.Width/2, Texture.Height/2), Scale, SpriteEffects.None, 0f);
             spriteBatch.End();
         }

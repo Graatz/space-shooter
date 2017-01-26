@@ -8,12 +8,11 @@ using System.Threading.Tasks;
 
 namespace Genesis
 {
-    class Sun
+    class Vortex
     {
-        public Camera Camera { get; set; }
         public List<Planet> Moons { get; set; }
         public Texture2D Texture { get; set; }
-        public Vector2 Location { get; set; }
+        public Vector2 Position { get; set; }
         public Color Color { get; set; }
         public float Scale { get; set; }
         public int Width { get; set; }
@@ -22,13 +21,14 @@ namespace Genesis
         public Vector2 Origin { get; set; }
         public float ShiningScale { get; set; }
         public bool ShiningStatus { get; set; }
+        public float RotationVelocity { get; set; }
 
-        public Sun(Camera camera, Texture2D texture, Vector2 location, float scale, Color color, Vector2 origin)
+        public Vortex(Texture2D texture, Vector2 position, float scale, Color color, Vector2 origin, float rotationVelocity)
         {
+            RotationVelocity = rotationVelocity; 
             Origin = origin;
-            Camera = camera;
             Texture = texture;
-            Location = location;
+            Position = position;
             Scale = scale;
             Color = color;
             Width = (int)(Texture.Width * Scale);
@@ -37,6 +37,7 @@ namespace Genesis
 
         public void Update(GameTime gameTime)
         {
+            Rotation += RotationVelocity * gameTime.ElapsedGameTime.Milliseconds;
             if (ShiningStatus)
             {
                 ShiningScale += (float)gameTime.ElapsedGameTime.TotalSeconds * 0.3f;
@@ -52,12 +53,12 @@ namespace Genesis
 
         }
 
-        public void Draw(SpriteBatch spriteBatch)
+        public void Draw(SpriteBatch spriteBatch, Camera camera)
         {
-            if (Camera.InView(new Rectangle((int)Location.X - Texture.Width / 2, (int)Location.Y - Texture.Height / 2, Width, Height)))
+            if (camera.InView(new Rectangle((int)Position.X - Texture.Width / 2, (int)Position.Y - Texture.Height / 2, Width, Height)))
             {
-                spriteBatch.Draw(Texture, Location, null, Color, Rotation, Origin, ShiningScale * 1.3f, SpriteEffects.None, 0f);
-                spriteBatch.Draw(Texture, Location, null, Color, Rotation, Origin, Scale, SpriteEffects.None, 0f);
+                spriteBatch.Draw(Texture, Position, null, new Color(255, 255, 255, 50), Rotation, Origin, Scale * 1.3f, SpriteEffects.None, 0f);
+                spriteBatch.Draw(Texture, Position, null, new Color(255, 255, 255, 50), Rotation, Origin, Scale, SpriteEffects.None, 0f);
             }
         }
     }

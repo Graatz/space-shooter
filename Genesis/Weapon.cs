@@ -48,6 +48,7 @@ namespace Genesis
             for (int i = 0; i < Bullets.Count; ++i)
             {
                 Bullets[i].Update(gameTime);
+
                 if (Bullets[i].Position.X < 0 || Bullets[i].Position.Y < 0 && Bullets[i].Position.X > Space.Width && Bullets[i].Position.Y > Space.Height)
                 {
                     Bullets.RemoveAt(i);
@@ -65,19 +66,7 @@ namespace Genesis
                                                                      (int)SpaceShip.Enemies[j].Width, (int)SpaceShip.Enemies[j].Height);
                             if (bulletRectangle.Intersects(enemyRectangle))
                             {
-                                if (SpaceShip.Enemies.ElementAt(j).Statistics.Health > 10)
-                                    SpaceShip.Enemies.ElementAt(j).Statistics.Health -= Power;
-
-                                if (SpaceShip.Enemies.ElementAt(j).Statistics.Health <= 0)
-                                {
-                                    SpaceShip.Enemies.RemoveAt(j);
-                                    ParticleHandler.Destruction.GenerateParticles(150, Bullets[i].Position, BulletTexture);
-                                }
-                                else
-                                {
-                                    ParticleHandler.Destruction.GenerateParticles(20, Bullets[i].Position, BulletTexture);
-                                }
-
+                                SpaceShip.Enemies.ElementAt(j).Statistics.Health -= Power;
                                 Bullets.RemoveAt(i);
                                 break;
                             }
@@ -100,12 +89,12 @@ namespace Genesis
 
         }
 
-        public void Draw(SpriteBatch spriteBatch, GraphicsDevice graphics)
+        public void Draw(SpriteBatch spriteBatch, GraphicsDevice graphics, Camera camera)
         {
             for (int i = 0; i < Bullets.Count; ++i)
             {
-                if (Space.Camera.InView(new Rectangle((int)Bullets[i].Position.X, (int)Bullets[i].Position.Y, Bullets[i].Width, Bullets[i].Height)))
-                    Bullets[i].Draw(spriteBatch, graphics);
+                if (camera.InView(new Rectangle((int)Bullets[i].Position.X, (int)Bullets[i].Position.Y, Bullets[i].Width, Bullets[i].Height)))
+                    Bullets[i].Draw(spriteBatch, graphics, Space, camera);
             }
         }
     }

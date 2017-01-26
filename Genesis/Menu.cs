@@ -7,28 +7,30 @@ using System.Collections.Generic;
 
 namespace Genesis
 {
-    class Menu : GameState
+    class Menu : IGameState
     {
-        private CurrentOptions CurrentOptions;
+        private GameStateHandler.CurrentOptions CurrentOptions;
         public void Initialize()
         {
             List<String> availableOptions = new List<String>()
             {
-                "NEW GAME",
+                "START GAME",
+                "GENERATE NEW SPACE",
                 "OPTIONS",
                 "EXIT"
             };
 
-            CurrentOptions = new CurrentOptions(availableOptions);
+            CurrentOptions = new GameStateHandler.CurrentOptions(availableOptions);
         }
 
         KeyboardState oldState { get; set; }
-        public Menu(Stack<GameState> gameStates, GraphicsDeviceManager graphics, ContentManager content) : base(gameStates, graphics, content)
+        public Menu()
         {
+            GameStateHandler.FadeEffect.Activate();
             Initialize();
         }
 
-        public override void Update(GameTime gameTime, Game game, Genesis genesis)
+        public void Update(GameTime gameTime, Game game, Genesis genesis)
         {
             KeyboardState newState = Keyboard.GetState();
 
@@ -40,21 +42,25 @@ namespace Genesis
             {
                 GoUp();
             }
-            else if (newState.IsKeyDown(Keys.Space) && Genesis.oldState.IsKeyUp(Keys.Space) && CurrentOptions.ActiveOption.Equals("NEW GAME"))
+            else if (newState.IsKeyDown(Keys.Space) && Genesis.oldState.IsKeyUp(Keys.Space) && CurrentOptions.ActiveOption.Equals("START GAME"))
             {
-                genesis.StartNewGame();
-                Genesis.Paused = false;
+                genesis.StartGame();
+            }
+            else if (newState.IsKeyDown(Keys.Space) && Genesis.oldState.IsKeyUp(Keys.Space) && CurrentOptions.ActiveOption.Equals("GENERATE NEW SPACE"))
+            {
+                genesis.GenerateSpace();
+                genesis.StartGame();
             }
             else if (newState.IsKeyDown(Keys.Space) && Genesis.oldState.IsKeyUp(Keys.Space) && CurrentOptions.ActiveOption.Equals("OPTIONS"))
             {
-                Options options = new Options(GameState.GameStates, Graphics, Content);
+                Options options = new Options();
                 CurrentOptions.ActiveOptionNumber = 0;
             }
             else if (newState.IsKeyDown(Keys.Space) && Genesis.oldState.IsKeyUp(Keys.Space) && CurrentOptions.ActiveOption.Equals("EXIT"))
             {
                 game.Exit();
             }
-            else if (newState.IsKeyDown(Keys.Escape) && Genesis.oldState.IsKeyUp(Keys.Escape) && Genesis.Paused == true)
+            else if (newState.IsKeyDown(Keys.Escape) && Genesis.oldState.IsKeyUp(Keys.Escape) && GameStateHandler.Paused == true)
             {
                 game.Exit();
             }
@@ -78,17 +84,16 @@ namespace Genesis
             }
         }
 
-        public override void Draw(SpriteBatch spriteBatch, GraphicsDevice graphicsDevice)
+        public void Draw(SpriteBatch spriteBatch, GraphicsDevice graphicsDevice)
         {
-            graphicsDevice.Clear(new Color(10, 10, 10, 255));
             spriteBatch.Begin();
             
             for (int i = 0; i < CurrentOptions.AvailableOptions.Count; ++i)
             {
                 if (CurrentOptions.ActiveOption.Equals(CurrentOptions.AvailableOptions[i]))
-                    spriteBatch.DrawString(Font, CurrentOptions.AvailableOptions[i], new Vector2(Genesis.Width / 2 - 50, Genesis.Height / 2 + i * 50 - CurrentOptions.AvailableOptions.Count * 30), HighlightColor, 0f, Vector2.Zero, 1, SpriteEffects.None, 0f);
+                    spriteBatch.DrawString(GameStateHandler.MenuFont, CurrentOptions.AvailableOptions[i], new Vector2(Genesis.Width / 2 - 50, Genesis.Height / 2 + i * 50 - CurrentOptions.AvailableOptions.Count * 30), GameStateHandler.HighlightColor, 0f, Vector2.Zero, 1, SpriteEffects.None, 0f);
                 else
-                    spriteBatch.DrawString(Font, CurrentOptions.AvailableOptions[i], new Vector2(Genesis.Width / 2 - 50, Genesis.Height / 2 + i * 50 - CurrentOptions.AvailableOptions.Count * 30), Color.White, 0f, Vector2.Zero, 1, SpriteEffects.None, 0f);
+                    spriteBatch.DrawString(GameStateHandler.MenuFont, CurrentOptions.AvailableOptions[i], new Vector2(Genesis.Width / 2 - 50, Genesis.Height / 2 + i * 50 - CurrentOptions.AvailableOptions.Count * 30), Color.White, 0f, Vector2.Zero, 1, SpriteEffects.None, 0f);
             }
             spriteBatch.End();
         }

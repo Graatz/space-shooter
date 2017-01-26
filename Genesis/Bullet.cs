@@ -7,35 +7,33 @@ namespace Genesis
     class Bullet : GameObject
     {
         public ISpaceShip SpaceShip { get; set; }
-        public Space Space { get; set; }
         private int bulletPath;
 
         public Bullet(ISpaceShip spaceShip, Space space, Texture2D texture, Vector2 position, float scale, float rotation, Vector2 direction, float velocity, Color color)
             : base (texture, position, scale, rotation, direction, velocity, color )
         {
             SpaceShip = spaceShip;
-            Space = space;
         }
 
         public void Update(GameTime gameTime)
         {
-            Vector2 direction = new Vector2((float)Math.Cos(Rotation),
-                                    (float)Math.Sin(Rotation));
-            direction.Normalize();
+            Direction = new Vector2((float)Math.Cos(Rotation), (float)Math.Sin(Rotation));
 
-            Vector2 newPosition = new Vector2(Position.X + direction.X * (Velocity * (float)gameTime.ElapsedGameTime.TotalSeconds), Position.Y + direction.Y * (Velocity * (float)gameTime.ElapsedGameTime.TotalSeconds));
+            Direction.Normalize();
 
-            Position = newPosition;
+            Position = new Vector2(Position.X + Direction.X * (Velocity * (float)gameTime.ElapsedGameTime.TotalSeconds), 
+                                   Position.Y + Direction.Y * (Velocity * (float)gameTime.ElapsedGameTime.TotalSeconds));
+
         }
 
-        public void Draw(SpriteBatch spriteBatch, GraphicsDevice graphics)
+        public void Draw(SpriteBatch spriteBatch, GraphicsDevice graphics, Space space, Camera camera)
         {
-            if (Position.X >= 0 && Position.Y >= 0 && Position.X < Space.Width && Position.Y < Space.Height)
+            if (Position.X >= 0 && Position.Y >= 0 && Position.X < space.Width && Position.Y < space.Height)
             {
                 Rectangle destinationRectangle = new Rectangle((int)Position.X, (int)Position.Y, Texture.Width, Texture.Height);
                 Color fadingColor = Color;
 
-                spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, null, null, null, null, Space.Camera.getTransformation(graphics));
+                spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, null, null, null, null, camera.getTransformation(graphics));
                 spriteBatch.Draw(Texture, Position, null, Color, 0f, new Vector2(Texture.Width / 2, Texture.Height / 2), 0.3f, SpriteEffects.None, 0f);
                 spriteBatch.Draw(Texture, Position, null, Color, 0f, new Vector2(Texture.Width / 2, Texture.Height / 2), Scale, SpriteEffects.None, 0f);
                 spriteBatch.End();
@@ -50,7 +48,7 @@ namespace Genesis
 
                     if (bulletPath >= i)
                     {
-                        spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, null, null, null, null, Space.Camera.getTransformation(graphics));
+                        spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, null, null, null, null, camera.getTransformation(graphics));
                         spriteBatch.Draw(Texture, newLocation, null, fadingColor, 0f, new Vector2(Texture.Width / 2, Texture.Height / 2), Scale, SpriteEffects.None, 0f);
                         spriteBatch.End();
                     }

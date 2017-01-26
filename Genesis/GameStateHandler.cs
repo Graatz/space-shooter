@@ -1,15 +1,30 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
 
 namespace Genesis
 {
-    class GameState
+    class GameStateHandler
     {
-        public static Stack<GameState> GameStates { get; set; }
+        private static bool paused = true;
+        public static bool Paused
+        {
+            get
+            {
+                return paused;
+            }
+            set
+            {
+                paused = value;
+                FadeEffect.Activate();
+            }
+        }
+        public static Color HighlightColor { get; set; }
+        public static SpriteFont MenuFont { get; set; }
+        public static Stack<IGameState> GameStates { get; set; }
+        public static FadeEffect FadeEffect;
 
         public struct CurrentOptions
         {
@@ -39,13 +54,14 @@ namespace Genesis
         }
 
         protected ContentManager Content { get; set; }
-        protected GraphicsDeviceManager Graphics { get; set; }
-        protected SpriteFont Font { get; set; }
-        protected Color HighlightColor { get; set; }
+        public static GraphicsDeviceManager Graphics { get; set; }
 
-        public GameState(Stack<GameState> gameStates, GraphicsDeviceManager graphics, ContentManager content)
+        public GameStateHandler(GraphicsDeviceManager graphics, ContentManager content, FadeEffect fadeEffect)
         {
-            GameStates = gameStates;
+            FadeEffect = fadeEffect;
+            GameStates = new Stack<IGameState>();
+            GameStates.Push(new Menu());
+
             Graphics = graphics;
             Content = content;
             HighlightColor = Color.Cyan;
@@ -55,16 +71,17 @@ namespace Genesis
 
         private void LoadContent(ContentManager Content)
         {
-            Font = Content.Load<SpriteFont>("Fonts/Menu");
+            MenuFont = Content.Load<SpriteFont>("Fonts/Menu");
         }
 
-        public virtual void Update(GameTime gameTime, Game game, Genesis genesis)
+        public void Update(GameTime gameTime, Game game, Genesis genesis)
         {
             GameStates.Peek().Update(gameTime, game, genesis);
         }
 
-        public virtual void Draw(SpriteBatch spriteBatch, GraphicsDevice graphicsDevice)
+        public void Draw(SpriteBatch spriteBatch, GraphicsDevice graphicsDevice)
         {
+            graphicsDevice.Clear(new Color(10, 10, 10, 255));
             GameStates.Peek().Draw(spriteBatch, graphicsDevice);
         }
     }

@@ -7,15 +7,17 @@ namespace Genesis
 {
     interface ISpaceShip
     {
+        Vector2 Position { get; set; }
+        Statistics Statistics { get; set; }
         Weapon Weapon { get; set; }
         List<ISpaceShip> Enemies { get; set; }
-        Vector2 Position { get; set; }
         int Width { get; set; }
         int Height { get; set; }
-        Statistics Statistics { get; set; }
         float Rotation { get; set; }
         float Velocity { get; set; }
-        void Update(GameTime gameTime);
-        void Draw(SpriteBatch spriteBatch, GraphicsDevice graphics);
+
+        void Update(GameTime gameTime, Camera camera);
+
+        void Draw(SpriteBatch spriteBatch, GraphicsDevice graphics, Camera camera);
     }
 }

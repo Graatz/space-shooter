@@ -7,9 +7,9 @@ using System.Collections.Generic;
 
 namespace Genesis
 {
-    class Options : GameState
+    class Options : IGameState
     {
-        private CurrentOptions CurrentOptions;
+        private GameStateHandler.CurrentOptions CurrentOptions;
         public void Initialize()
         {
             List<String> availableOptions = new List<String>()
@@ -20,9 +20,9 @@ namespace Genesis
                 "BACK"
             };
 
-            CurrentOptions = new CurrentOptions(availableOptions);
+            CurrentOptions = new GameStateHandler.CurrentOptions(availableOptions);
 
-            Fullscreen = Graphics.IsFullScreen;
+            Fullscreen = GameStateHandler.Graphics.IsFullScreen;
             List<Resolution> availableResolutions = new List<Resolution>()
             {
                 new Resolution(1366, 768),
@@ -41,7 +41,7 @@ namespace Genesis
             }
 
             DetectResolution();
-            GameState.GameStates.Push(this);
+            GameStateHandler.GameStates.Push(this);
         }
 
         struct Resolution
@@ -74,8 +74,9 @@ namespace Genesis
         private bool Fullscreen { get; set; }
         private KeyboardState oldState { get; set; }
 
-        public Options(Stack<GameState> gameStates, GraphicsDeviceManager graphics, ContentManager content) : base (gameStates, graphics, content)
+        public Options()
         {
+            GameStateHandler.FadeEffect.Activate();
             Initialize();
         }
 
@@ -83,15 +84,15 @@ namespace Genesis
         {
             for (int i = 0; i < Resolutions.Count; ++i)
             {
-                if (Resolutions[i].Width == Graphics.PreferredBackBufferWidth &&
-                    Resolutions[i].Height == Graphics.PreferredBackBufferHeight)
+                if (Resolutions[i].Width == GameStateHandler.Graphics.PreferredBackBufferWidth &&
+                    Resolutions[i].Height == GameStateHandler.Graphics.PreferredBackBufferHeight)
                 {
                     ActiveResolutionNumber = i;
                 }
             }
         }
 
-        public override void Update(GameTime gameTime, Game game, Genesis genesis)
+        public void Update(GameTime gameTime, Game game, Genesis genesis)
         {
             KeyboardState newState = Keyboard.GetState();
 
@@ -123,25 +124,26 @@ namespace Genesis
             }
             else if (newState.IsKeyDown(Keys.Space) && oldState.IsKeyUp(Keys.Space) && CurrentOptions.ActiveOptionNumber == 2)
             {
-                if (Fullscreen && !Graphics.IsFullScreen)
-                    Graphics.IsFullScreen = true;
-                else if (!Fullscreen && Graphics.IsFullScreen)
-                    Graphics.IsFullScreen = false;
+                if (Fullscreen && !GameStateHandler.Graphics.IsFullScreen)
+                    GameStateHandler.Graphics.IsFullScreen = true;
+                else if (!Fullscreen && GameStateHandler.Graphics.IsFullScreen)
+                    GameStateHandler.Graphics.IsFullScreen = false;
 
-                if (Graphics.PreferredBackBufferWidth != Resolutions[ActiveResolutionNumber].Width || 
-                    Graphics.PreferredBackBufferHeight != Resolutions[ActiveResolutionNumber].Height)
+                if (GameStateHandler.Graphics.PreferredBackBufferWidth != Resolutions[ActiveResolutionNumber].Width ||
+                    GameStateHandler.Graphics.PreferredBackBufferHeight != Resolutions[ActiveResolutionNumber].Height)
                 {
-                    Graphics.PreferredBackBufferWidth = Resolutions[ActiveResolutionNumber].Width;
-                    Graphics.PreferredBackBufferHeight = Resolutions[ActiveResolutionNumber].Height;
+                    GameStateHandler.Graphics.PreferredBackBufferWidth = Resolutions[ActiveResolutionNumber].Width;
+                    GameStateHandler.Graphics.PreferredBackBufferHeight = Resolutions[ActiveResolutionNumber].Height;
                     Genesis.Width = Resolutions[ActiveResolutionNumber].Width;
                     Genesis.Height = Resolutions[ActiveResolutionNumber].Height;
                 }
-                
-                Graphics.ApplyChanges();
+
+                GameStateHandler.Graphics.ApplyChanges();
             }
             else if (newState.IsKeyDown(Keys.Space) && oldState.IsKeyUp(Keys.Space) && CurrentOptions.ActiveOptionNumber == 3)
             {
-                GameState.GameStates.Pop();
+                GameStateHandler.GameStates.Pop();
+                GameStateHandler.FadeEffect.Activate();
             }
 
             oldState = newState;
@@ -163,9 +165,8 @@ namespace Genesis
             }
         }
 
-        public override void Draw(SpriteBatch spriteBatch, GraphicsDevice graphicsDevice)
+        public void Draw(SpriteBatch spriteBatch, GraphicsDevice graphicsDevice)
         {
-            graphicsDevice.Clear(new Color(10, 10, 10, 255));
             spriteBatch.Begin();
 
             for (int i = 0; i < CurrentOptions.AvailableOptions.Count; ++i)
@@ -184,9 +185,9 @@ namespace Genesis
                 }
 
                 if (CurrentOptions.ActiveOption.Equals(CurrentOptions.AvailableOptions[i]))
-                    spriteBatch.DrawString(Font, optionString, new Vector2(Genesis.Width / 2 - 50, Genesis.Height / 2 + i * 50 - CurrentOptions.AvailableOptions.Count * 30), HighlightColor, 0f, Vector2.Zero, 1, SpriteEffects.None, 0f);
+                    spriteBatch.DrawString(GameStateHandler.MenuFont, optionString, new Vector2(Genesis.Width / 2 - 50, Genesis.Height / 2 + i * 50 - CurrentOptions.AvailableOptions.Count * 30), GameStateHandler.HighlightColor, 0f, Vector2.Zero, 1, SpriteEffects.None, 0f);
                 else 
-                    spriteBatch.DrawString(Font, optionString, new Vector2(Genesis.Width / 2 - 50, Genesis.Height / 2 + i * 50 - CurrentOptions.AvailableOptions.Count * 30), Color.White, 0f, Vector2.Zero, 1, SpriteEffects.None, 0f);
+                    spriteBatch.DrawString(GameStateHandler.MenuFont, optionString, new Vector2(Genesis.Width / 2 - 50, Genesis.Height / 2 + i * 50 - CurrentOptions.AvailableOptions.Count * 30), Color.White, 0f, Vector2.Zero, 1, SpriteEffects.None, 0f);
             }
             spriteBatch.End();
         }
